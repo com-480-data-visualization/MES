@@ -115,7 +115,7 @@ Common usage of this data could be:
 
 Our approach is original because it creates a very entertaining and impactfull way to see how projects are build over time
 
-Our inspiration has been MAMMA MIA
+Our inspiration has been drugs and alcohol.
 
 ## Milestone 2 (17th April, 5pm)
 
