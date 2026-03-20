@@ -1,0 +1,27 @@
+{
+  "name": "mes",
+  "version": "1.0.0",
+  "main": "test.js",
+  "scripts": {
+    "dev": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/com-480-data-visualization/MES.git"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/com-480-data-visualization/MES/issues"
+  },
+  "homepage": "https://github.com/com-480-data-visualization/MES#readme",
+  "dependencies": {
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "vite": "^8.0.1"
+  }
+}
