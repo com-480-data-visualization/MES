@@ -25,7 +25,7 @@ Please, fill the following sections about your project.
 
 We will use GitHub API which has a rate limit of 5000 request per hour, with the API we will fetch information from the commit history for different projects, that will constitude our database.
 
-The preprocessing will just consist in organizing commits based on its time stamp, register total number of commmits in the whole project and the users who did them. 
+The preprocessing will just consist in organizing commits based on its time stamp, register total number of commits in the whole project and the users who did them. 
 
 If the projects at some point seems too little we could distinguish between normal commits, merges, rollbacks, etc.
 ### Problematic
@@ -103,15 +103,11 @@ function groupCommitsByDay(commits) {
 > - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
 
 Common usage of this data could be:
- - Developer activity over time – tracking which days or hours have the most commits.
+ - [Developer activity over time](https://jokergoo.github.io/spiralize/index.html) – tracking which days or hours have the most commits.
 
- - Team contribution analysis – seeing who contributes most, or comparing individual vs. team productivity.
+ - [Team contribution analysis](https://gitlights.com/docker/github-commits/) – seeing who contributes most, or comparing individual vs. team productivity.
 
- - Code churn analysis – measuring additions vs deletions over time to detect refactoring or unstable code areas.
-
- - Commit message analysis – identifying common keywords like “fix”, “feature”, “refactor” to understand the nature of work.
-
- - Repository health & growth – number of commits per week/month, tracking project evolution.
+ - [Commit message analysis](https://arxiv.org/abs/2007.10912) – identifying common keywords like “fix”, “feature”, “refactor” to understand the nature of work.
 
 Our approach is original because it creates a very entertaining and impactfull way to see how projects are build over time
 
