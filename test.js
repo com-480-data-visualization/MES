@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {Worker} from './worker.js';
+import {Building} from "./building";
 
 // Scene
 const scene = new THREE.Scene();
@@ -19,12 +21,14 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Cube
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+//building
+const building = new Building()
+scene.add(building)
 
+
+//worker
+const worker = new Worker();
+scene.add(worker);
 
 
 // Orbit Controls
@@ -38,27 +42,21 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Example points
-const points = [
-    new THREE.Vector3(-10, 0, 0),
-    new THREE.Vector3(0, 5, 0),
-    new THREE.Vector3(10, 0, 0),
-    new THREE.Vector3(0, -5, 0),
-    new THREE.Vector3(-10, 0, 0)
-];
-
-// Create a smooth curve
-const curve = new THREE.CatmullRomCurve3(points);
-
-const geometry2 = new THREE.BufferGeometry().setFromPoints(curve.getPoints(100));
-const material2 = new THREE.LineBasicMaterial({ color: 0xff0000 });
-const curveObject = new THREE.Line(geometry2, material2);
-scene.add(curveObject);
 
 
+// Floor
+const floorGeometry = new THREE.PlaneGeometry(100, 100);
+const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+
+// Rotate to lie flat (XZ plane)
+floor.rotation.x = -Math.PI / 2;
+
+
+scene.add(floor);
 
 let t = 0;       // progress along the path
-let speed = 0.002; // adjust speed
+let speed = 0.001; // adjust speed
 
 function animate() {
     requestAnimationFrame(animate);
@@ -66,14 +64,35 @@ function animate() {
     t += speed;
     if (t > 1 || t < 0) speed *= -1; // reverse direction at ends
 
-    const position = curve.getPoint(t);
-    cube.position.copy(position);
-
-    const tangent = curve.getTangent(t).normalize();
-    cube.lookAt(cube.position.clone().add(tangent));
+    worker.goWork(t)
+    building.upgrade(t)
 
     controls.update();
     renderer.render(scene, camera);
 }
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+window.addEventListener('click', onClick, false);
+
+function onClick(event) {
+    // Convert mouse position to normalized device coordinates (-1 to +1)
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the raycaster
+    raycaster.setFromCamera(mouse, camera);
+
+    // Array of objects to test for intersection
+    const intersects = raycaster.intersectObjects([building]);
+
+    if (intersects.length > 0) {
+        // Cube was clicked!
+        alert('You clicked the cube!');
+    }
+}
+
 animate();
+
+
