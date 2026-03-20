@@ -102,7 +102,7 @@ function groupCommitsByDay(commits) {
 > - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
 > - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
 
-Common usage of this data could be:
+Some other projects that are using similar data are:
  - [Developer activity over time](https://jokergoo.github.io/spiralize/index.html) – tracking which days or hours have the most commits.
 
  - [Team contribution analysis](https://gitlights.com/docker/github-commits/) – seeing who contributes most, or comparing individual vs. team productivity.
@@ -111,7 +111,7 @@ Common usage of this data could be:
 
 Our approach is original because it creates a very entertaining and impactfull way to see how projects are build over time
 
-Our inspiration has been drugs and alcohol.
+Our inspiration has been city building games and our love for programming.
 
 ## Milestone 2 (17th April, 5pm)
 
