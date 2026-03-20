@@ -111,7 +111,8 @@ Some other projects that are using similar data are:
 
 Our approach is original because it creates a very entertaining and impactfull way to see how projects are build over time
 
-Our inspiration has been city building games and our love for programming.
+Our primary inspiration stems from simulated environments and "tycoon-style" management games (e.g., SimCity or Factorio), where complex systems are represented through emergent visual growth.
+We are also inspired by the concept of Gamification in Productivity, exploring how the visualization of "building" can provide a sense of progress and accomplishment. We aim to capture the "organic growth" of software—the idea that a codebase is not just a static file, but a living architecture that requires continuous labor and collaborative assembly.
 
 ## Milestone 2 (17th April, 5pm)
 
