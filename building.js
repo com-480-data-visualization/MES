@@ -22,8 +22,7 @@ export class Building extends THREE.Object3D {
         }
     }
 
-    // Example method to animate
-    bob(amount = 0.1) {
-        this.position.y += Math.sin(Date.now() * 0.005) * amount;
+    onClick(){
+        alert("mamma mia, a building")
     }
 }

@@ -52,9 +52,8 @@ export class Worker extends THREE.Object3D {
         this.lookAt(this.position.clone().add(tangent));
     }
 
-    // Example method to animate
-    bob(amount = 0.1) {
-        this.position.y += Math.sin(Date.now() * 0.005) * amount;
+    onClick(){
+        alert("mamma mia, a worker")
     }
 }
 

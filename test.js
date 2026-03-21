@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Worker} from './worker.js';
 import {Building} from "./building";
+import { Sky } from 'three/examples/jsm/objects/Sky.js';
 
 // Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xfffffff);
+//scene.background = new THREE.Color(0xfffffff);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -34,6 +35,8 @@ scene.add(worker);
 // Orbit Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // smooth movement
+controls.minDistance = 30
+controls.maxDistance = 200
 
 // Resize handling
 window.addEventListener('resize', () => {
@@ -44,8 +47,27 @@ window.addEventListener('resize', () => {
 
 
 
+
+const sky = new Sky();
+sky.scale.setScalar(450000); // make it large
+scene.add(sky);
+
+// Optional: adjust parameters
+const uniforms = sky.material.uniforms;
+uniforms['turbidity'].value = 10;
+uniforms['rayleigh'].value = 2;
+uniforms['mieCoefficient'].value = 0.005;
+uniforms['mieDirectionalG'].value = 0.8;
+
+const sun = new THREE.DirectionalLight(0xffffff, 1);
+sun.position.set(100, 100, 100);
+scene.add(sun);
+
+sky.material.uniforms['sunPosition'].value.copy(sun.position);
+
+
 // Floor
-const floorGeometry = new THREE.PlaneGeometry(100, 100);
+const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
@@ -85,11 +107,18 @@ function onClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Array of objects to test for intersection
-    const intersects = raycaster.intersectObjects([building]);
+    const intersects = raycaster.intersectObjects([building,worker],true);
 
     if (intersects.length > 0) {
-        // Cube was clicked!
-        alert('You clicked the cube!');
+        let objectHit = intersects[0].object;
+
+        while (objectHit && !objectHit.onClick) {
+            objectHit = objectHit.parent; // walk up
+        }
+
+        if (objectHit?.onClick) {
+            objectHit.onClick();
+        }
     }
 }
 
