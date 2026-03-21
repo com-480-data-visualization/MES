@@ -1,28 +1,15 @@
 import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 export class Worker extends THREE.Object3D {
-    constructor(color = 0x00ff00) {
-        super(); // call Object3D constructor
+    constructor() {
+        super();
 
-        // Add a body (cube)
-        const bodyGeometry = new THREE.BoxGeometry(1, 2, 1);
-        const bodyMaterial = new THREE.MeshBasicMaterial({ color });
-        this.body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        this.body.castShadow = true;
+        this.loader = new GLTFLoader();
+        this.url = "models/RobotExpressive.glb"
 
-        // Add the body to this Object3D
-        this.add(this.body);
+        const c_Lenght = 2;
 
-        // Optional: add a head (sphere)
-        const headGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-        const headMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-        this.head = new THREE.Mesh(headGeometry, headMaterial);
-        this.head.position.y = 1.5; // on top of the body
-        this.head.castShadow = true;
-        this.add(this.head);
-
-
-        const c_Lenght = 2
-        //work path
         const points = [
             new THREE.Vector3(50, c_Lenght/2, 50),
             new THREE.Vector3(40, c_Lenght/2, 45),
@@ -34,17 +21,45 @@ export class Worker extends THREE.Object3D {
             new THREE.Vector3(10, c_Lenght/2, 10)
         ];
 
-        // Create a smooth curve
         this.curve = new THREE.CatmullRomCurve3(points);
-
 
     }
 
+    async loadModel() {
+        return new Promise((resolve, reject) => {
+            this.loader.load(
+                this.url,
+                (gltf) => {
+                    this.model = gltf.scene;
+
+
+                    this.add(this.model);
+
+                    const mixer = new THREE.AnimationMixer(this.model);
+                    const clip = gltf.animations[6]; // pick an animation
+                    const action = mixer.clipAction(clip);
+                    action.play();
+
+                    // store mixer for update loop
+                    this.mixer = mixer;
+                    resolve(this);
+
+                },
+                undefined,
+                reject
+            );
+        });
+    }
+
     // Example method to make the worker move
-    goWork(t) {
+    goWork(t,delta) {
         if (t < 0){
             t = 0
         }
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+
         const position = this.curve.getPoint(t);
         this.position.copy(position);
 
