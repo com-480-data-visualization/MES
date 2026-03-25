@@ -32,6 +32,12 @@ export class Worker extends THREE.Object3D {
                 (gltf) => {
                     this.model = gltf.scene;
 
+                    const head = this.model.getObjectByName('Head_3'); // depends on model!
+
+                    if (head) {
+                        head.material.color.set(0xff0000); //make this random with color palette
+                    }
+
 
                     this.add(this.model);
 
