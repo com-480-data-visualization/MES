@@ -31,6 +31,9 @@ scene.add(building)
 const worker = new Worker();
 await worker.loadModel()
 scene.add(worker);
+const worker2 = new Worker();
+await worker2.loadModel()
+scene.add(worker2);
 
 
 // Orbit Controls
@@ -78,21 +81,21 @@ floor.rotation.x = -Math.PI / 2;
 
 scene.add(floor);
 
-let t = 0;       // progress along the path
-let speed = 0.001; // adjust speed
 const clock = new THREE.Timer();
 
 function animate() {
     requestAnimationFrame(animate);
 
-    t += speed;
-    if (t > 1 || t < 0) speed *= -1; // reverse direction at ends
+
     clock.update()
     const delta = clock.getDelta();
 
 
-    worker.goWork(t, delta)
-    building.upgrade(t)
+
+
+    worker.update(delta)
+    worker2.update(delta)
+    //building.upgrade(t)
 
     controls.update();
     renderer.render(scene, camera);
