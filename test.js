@@ -35,6 +35,8 @@ const worker2 = new Worker();
 await worker2.loadModel()
 scene.add(worker2);
 
+const activeWorkers = [worker,worker2]
+
 
 // Orbit Controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -90,11 +92,9 @@ function animate() {
     clock.update()
     const delta = clock.getDelta();
 
+    activeWorkers.forEach((worker) => {worker.update(delta)})
 
 
-
-    worker.update(delta)
-    worker2.update(delta)
     //building.upgrade(t)
 
     controls.update();
@@ -128,6 +128,16 @@ function onClick(event) {
             objectHit.onClick();
         }
     }
+}
+
+const button = document.getElementById("myButton");
+button.addEventListener("click", clo);
+
+async function clo(){
+    const worker = new Worker();
+    await worker.loadModel()
+    scene.add(worker);
+    activeWorkers.push(worker);
 }
 
 animate();
