@@ -1,27 +1,19 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import {generatePath} from "./pathGenerator";
+
+const speed = 0.15
 
 export class Worker extends THREE.Object3D {
     constructor() {
         super();
+        this.mode = 0
+        this.t = 0
 
         this.loader = new GLTFLoader();
         this.url = "models/RobotExpressive.glb"
 
-        const c_Lenght = 2;
-
-        const points = [
-            new THREE.Vector3(50, c_Lenght/2, 50),
-            new THREE.Vector3(40, c_Lenght/2, 45),
-            new THREE.Vector3(35, c_Lenght/2, 35),
-            new THREE.Vector3(20, c_Lenght/2, 40),
-            new THREE.Vector3(10, c_Lenght/2, 10),
-            new THREE.Vector3(10, c_Lenght/2, 10),
-            new THREE.Vector3(10, c_Lenght/2, 10),
-            new THREE.Vector3(10, c_Lenght/2, 10)
-        ];
-
-        this.curve = new THREE.CatmullRomCurve3(points);
+        this.curve = generatePath()
 
     }
 
@@ -31,6 +23,7 @@ export class Worker extends THREE.Object3D {
                 this.url,
                 (gltf) => {
                     this.model = gltf.scene;
+                    this.gltf = gltf
 
                     const head = this.model.getObjectByName('Head_3'); // depends on model!
 
@@ -57,24 +50,60 @@ export class Worker extends THREE.Object3D {
         });
     }
 
-    // Example method to make the worker move
-    goWork(t,delta) {
-        if (t < 0){
-            t = 0
+    update(delta) {
+        switch (this.mode) {
+            case 0:
+                this.goWork(delta)
+                return;
+            case 1:
+                this.work(delta)
+                return;
+            case 2:
+                this.returnWork()
+                return;
+            default:
+                return;
+
         }
+    }
+
+    work(delta){
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+    }
+
+    goWork(delta) {
+        this.t += speed * delta;
+        if (this.t >= 1){
+            this.t = 1
+            this.mode = 1
+            this.changeAnimation(5)
+        }
+
         if (this.mixer) {
             this.mixer.update(delta);
         }
 
-        const position = this.curve.getPoint(t);
+        const position = this.curve.getPoint(this.t);
         this.position.copy(position);
 
-        const tangent = this.curve.getTangent(t).normalize();
+        const tangent = this.curve.getTangent(this.t).normalize();
         this.lookAt(this.position.clone().add(tangent));
     }
 
     onClick(){
         alert("mamma mia, a worker")
+    }
+
+    changeAnimation(n){
+
+        const newClip = this.gltf.animations[n];
+        const newAction = this.mixer.clipAction(newClip);
+        this.mixer.stopAllAction();
+
+        newAction.reset();
+        newAction.play();
     }
 }
 
