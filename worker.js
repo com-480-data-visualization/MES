@@ -15,6 +15,8 @@ export class Worker extends THREE.Object3D {
 
         this.curve = generatePath()
 
+        this.c = 0
+
     }
 
     async loadModel() {
@@ -59,7 +61,7 @@ export class Worker extends THREE.Object3D {
                 this.work(delta)
                 return;
             case 2:
-                this.returnWork()
+                this.returnWork(delta)
                 return;
             default:
                 return;
@@ -71,6 +73,31 @@ export class Worker extends THREE.Object3D {
         if (this.mixer) {
             this.mixer.update(delta);
         }
+        this.c++
+        if (this.c >= 100){
+            this.c = 0
+            this.mode = 2
+            this.changeAnimation(6)
+        }
+    }
+
+    returnWork(delta) {
+        this.t += speed * -delta;
+        if (this.t <= 0){
+            this.t = 0
+            this.mode = 3
+            this.changeAnimation(0)
+        }
+
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+
+        const position = this.curve.getPoint(this.t);
+        this.position.copy(position);
+
+        const tangent = this.curve.getTangent(this.t).normalize().multiplyScalar(-1);
+        this.lookAt(this.position.clone().add(tangent));
     }
 
     goWork(delta) {
@@ -105,5 +132,6 @@ export class Worker extends THREE.Object3D {
         newAction.reset();
         newAction.play();
     }
+
 }
 
