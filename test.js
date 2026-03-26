@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Worker} from './worker.js';
 import {Building} from "./building";
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import {updateTimeline} from "./timeline";
 
 // Scene
 const scene = new THREE.Scene();
@@ -93,6 +94,7 @@ function animate() {
     const delta = clock.getDelta();
 
     activeWorkers.forEach((worker) => {worker.update(delta)})
+    updateTimeline(clock.getElapsed())
 
 
     //building.upgrade(t)
