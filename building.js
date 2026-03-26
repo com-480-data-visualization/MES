@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import {updateInfo} from "./pathGenerator";
 export class Building extends THREE.Object3D {
     constructor(color = 0x0000ff) {
         super(); // call Object3D constructor
@@ -23,6 +24,6 @@ export class Building extends THREE.Object3D {
     }
 
     onClick(){
-        alert("mamma mia, a building")
+        updateInfo("mamma mia a building")
     }
 }

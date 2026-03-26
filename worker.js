@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import {generatePath} from "./pathGenerator";
+import {generatePath, updateInfo} from "./pathGenerator";
 
 const speed = 0.15
 
@@ -74,7 +74,7 @@ export class Worker extends THREE.Object3D {
             this.mixer.update(delta);
         }
         this.c++
-        if (this.c >= 100){
+        if (this.c >= 1000){
             this.c = 0
             this.mode = 2
             this.changeAnimation(6)
@@ -120,7 +120,7 @@ export class Worker extends THREE.Object3D {
     }
 
     onClick(){
-        alert("mamma mia, a worker")
+        updateInfo("mamma mia a worker")
     }
 
     changeAnimation(n){

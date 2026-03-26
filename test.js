@@ -115,7 +115,7 @@ function onClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Array of objects to test for intersection
-    const intersects = raycaster.intersectObjects([building,worker],true);
+    const intersects = raycaster.intersectObjects([building,...activeWorkers],true);
 
     if (intersects.length > 0) {
         let objectHit = intersects[0].object;
