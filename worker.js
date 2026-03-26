@@ -133,5 +133,9 @@ export class Worker extends THREE.Object3D {
         newAction.play();
     }
 
+    getMode(){
+        return this.mode;
+    }
+
 }
 

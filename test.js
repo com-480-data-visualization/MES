@@ -36,7 +36,7 @@ const worker2 = new Worker();
 await worker2.loadModel()
 scene.add(worker2);
 
-const activeWorkers = [worker,worker2]
+let activeWorkers = [worker,worker2]
 
 
 // Orbit Controls
@@ -93,7 +93,15 @@ function animate() {
     clock.update()
     const delta = clock.getDelta();
 
-    activeWorkers.forEach((worker) => {worker.update(delta)})
+    activeWorkers = activeWorkers.filter(worker => {
+        if (worker.getMode() > 2) {
+            scene.remove(worker);
+            return false; // remove from array
+        }
+
+        worker.update(delta);
+        return true; // keep
+    });
     updateTimeline(clock.getElapsed())
 
 
