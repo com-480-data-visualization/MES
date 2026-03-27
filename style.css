@@ -18,7 +18,7 @@
     border-radius: 8px;
 }
 
-#timeline {
+.timeline {
     position: fixed;
     bottom: 20px;
     left: 50%;
@@ -28,7 +28,7 @@
     height: 10px;
 
     background: rgba(255,255,255,0.2);
-    border-radius: 5px;
+    border-radius: 1px;
     overflow: hidden;
 
     z-index: 10;
@@ -40,4 +40,8 @@
     background: #00ffcc;
 
     transition: width 0.1s linear;
+}
+
+#ruler {
+    transition: left 0.9s linear;
 }

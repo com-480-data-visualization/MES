@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Worker} from './worker.js';
 import {Building} from "./building";
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
-import {updateTimeline} from "./timeline";
+import {generateRuler, startTimeline, updateTimeline} from "./timeline";
 
 // Scene
 const scene = new THREE.Scene();
@@ -102,7 +102,6 @@ function animate() {
         worker.update(delta);
         return true; // keep
     });
-    updateTimeline(clock.getElapsed())
 
 
     //building.upgrade(t)
@@ -149,7 +148,7 @@ async function clo(){
     scene.add(worker);
     activeWorkers.push(worker);
 }
-
+startTimeline()
 animate();
 
 
