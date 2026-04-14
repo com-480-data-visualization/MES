@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Worker} from './worker.js';
 import {Building} from "./building";
-import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import { Sky } from './sky.js';
 import {generateRuler, startTimeline, updateTimeline} from "./timeline";
 import {Tile} from "./tile";
 
@@ -57,21 +57,7 @@ window.addEventListener('resize', () => {
 
 
 const sky = new Sky();
-sky.scale.setScalar(450000); // make it large
 scene.add(sky);
-
-// Optional: adjust parameters
-const uniforms = sky.material.uniforms;
-uniforms['turbidity'].value = 10;
-uniforms['rayleigh'].value = 2;
-uniforms['mieCoefficient'].value = 0.005;
-uniforms['mieDirectionalG'].value = 0.8;
-
-const sun = new THREE.DirectionalLight(0xffffff, 1);
-sun.position.set(100, 100, 100);
-scene.add(sun);
-
-sky.material.uniforms['sunPosition'].value.copy(sun.position);
 
 
 // Floor
