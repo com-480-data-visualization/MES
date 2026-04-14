@@ -81,7 +81,7 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 // Rotate to lie flat (XZ plane)
 floor.rotation.x = -Math.PI / 2;
 
-#diavlo
+//diavlo
 scene.add(floor);
 
 const clock = new THREE.Timer();
