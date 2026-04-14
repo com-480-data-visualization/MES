@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {Worker} from './worker.js';
 import {Building} from "./building";
-import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import { Sky } from './sky.js';
 import {generateRuler, startTimeline, updateTimeline} from "./timeline";
+import {Tile} from "./tile";
 import { GitHubCommitAPI } from './api.js';
 
 // Scene
@@ -61,24 +62,12 @@ window.addEventListener('resize', () => {
 
 
 const sky = new Sky();
-sky.scale.setScalar(450000); // make it large
 scene.add(sky);
-
-// Optional: adjust parameters
-const uniforms = sky.material.uniforms;
-uniforms['turbidity'].value = 10;
-uniforms['rayleigh'].value = 2;
-uniforms['mieCoefficient'].value = 0.005;
-uniforms['mieDirectionalG'].value = 0.8;
-
-const sun = new THREE.DirectionalLight(0xffffff, 1);
-sun.position.set(100, 100, 100);
-scene.add(sun);
-
-sky.material.uniforms['sunPosition'].value.copy(sun.position);
 
 
 // Floor
+const tile = new Tile(1000, 100);
+scene.add(tile);
 const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -138,7 +127,7 @@ function onClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Array of objects to test for intersection
-    const intersects = raycaster.intersectObjects([building,...activeWorkers],true);
+    const intersects = raycaster.intersectObjects([building, tile, ...activeWorkers],true);
 
     if (intersects.length > 0) {
         let objectHit = intersects[0].object;
