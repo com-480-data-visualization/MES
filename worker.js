@@ -11,7 +11,8 @@ export class Worker extends THREE.Object3D {
         this.t = 0
 
         this.loader = new GLTFLoader();
-        this.url = "models/RobotExpressive.glb"
+        //this.url = "models/RobotExpressive.glb"
+        this.url = "models/r7v2.glb"
 
         this.curve = generatePath()
 
@@ -33,11 +34,12 @@ export class Worker extends THREE.Object3D {
                         head.material.color.set(0xff0000); //make this random with color palette
                     }
 
+                    this.model.scale.set(1, 1, 1);
 
                     this.add(this.model);
 
                     const mixer = new THREE.AnimationMixer(this.model);
-                    const clip = gltf.animations[6]; // pick an animation
+                    const clip = gltf.animations[10]; // pick an animation normal 6
                     const action = mixer.clipAction(clip);
                     action.play();
 

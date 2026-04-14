@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 
 export function generatePath(){
-    const center =  {x:0,y:1,z:0}
+    const center =  {x:0,y:2.5,z:0}
     const theta_max = Math.random() * Math.PI * 2;
     const theta_min = (Math.random() * 2 - 1) * Math.PI/2 + theta_max;
     const r_min = 10
