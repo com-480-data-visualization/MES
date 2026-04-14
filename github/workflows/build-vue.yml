@@ -2,7 +2,7 @@ name: Application build and deployment
 on:
   push:
     branches:
-      - m2
+      - master
 jobs:
   build:
     name: Application build
