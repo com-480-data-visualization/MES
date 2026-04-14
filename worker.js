@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {generatePath, updateInfo} from "./pathGenerator";
+import { getNextRobotColor } from "./palette.js";
 
 const speed = 0.15
 
@@ -31,7 +32,7 @@ export class Worker extends THREE.Object3D {
                     const head = this.model.getObjectByName('Head_3'); // depends on model!
 
                     if (head) {
-                        head.material.color.set(0xff0000); //make this random with color palette
+                        head.material.color.set(getNextRobotColor()); //make this random with color palette
                     }
 
                     this.model.scale.set(1, 1, 1);

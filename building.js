@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import {updateInfo} from "./pathGenerator";
+import { palette } from "./palette.js";
 export class Building extends THREE.Object3D {
-    constructor(color = 0x0000ff) {
+    constructor(color = palette.building) {
         super(); // call Object3D constructor
 
         // Add a body (cube)
