@@ -12,7 +12,7 @@ export class Worker extends THREE.Object3D {
 
         this.loader = new GLTFLoader();
         //this.url = "models/RobotExpressive.glb"
-        this.url = "models/r7v2.glb"
+        this.url = "models/RobotExpressive.glb"
 
         this.curve = generatePath()
 
