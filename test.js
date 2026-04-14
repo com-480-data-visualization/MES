@@ -4,6 +4,7 @@ import {Worker} from './worker.js';
 import {Building} from "./building";
 import { Sky } from 'three/examples/jsm/objects/Sky.js';
 import {generateRuler, startTimeline, updateTimeline} from "./timeline";
+import {Tile} from "./tile";
 
 // Scene
 const scene = new THREE.Scene();
@@ -74,15 +75,8 @@ sky.material.uniforms['sunPosition'].value.copy(sun.position);
 
 
 // Floor
-const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
-const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
-const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-
-// Rotate to lie flat (XZ plane)
-floor.rotation.x = -Math.PI / 2;
-
-//diavlo
-scene.add(floor);
+const tile = new Tile(1000, 100);
+scene.add(tile);
 
 const clock = new THREE.Timer();
 
@@ -124,7 +118,7 @@ function onClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Array of objects to test for intersection
-    const intersects = raycaster.intersectObjects([building,...activeWorkers],true);
+    const intersects = raycaster.intersectObjects([building, tile, ...activeWorkers],true);
 
     if (intersects.length > 0) {
         let objectHit = intersects[0].object;
