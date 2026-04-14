@@ -11,7 +11,7 @@ export class Worker extends THREE.Object3D {
         this.t = 0
 
         this.loader = new GLTFLoader();
-        this.url = "models/RobotExpressive.glb"
+        this.url = "/MES/models/RobotExpressive.glb"
         //this.url = "models/r7v2.glb"
 
         this.curve = generatePath()
