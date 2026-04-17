@@ -9,7 +9,7 @@ import { GitHubCommitAPI } from './api/api.js';
 
 // Scene
 const scene = new THREE.Scene();
-//scene.background = new THREE.Color(0xfffffff);
+//scene.background = new THREE.Color(0xfffffff) ;
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
