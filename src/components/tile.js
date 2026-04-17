@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { palette } from './palette.js';
+import { palette } from '../utils/palette.js';
 
 export class Tile extends THREE.Object3D {
     constructor(size = 100, divisions = 10) {

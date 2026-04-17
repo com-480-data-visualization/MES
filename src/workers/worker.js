@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import {generatePath, updateInfo} from "./pathGenerator";
-import { getNextRobotColor } from "./palette.js";
+import {generatePath, updateInfo} from "../utils/pathGenerator";
+import { getNextRobotColor } from "../utils/palette.js";
 
 const speed = 0.15
 

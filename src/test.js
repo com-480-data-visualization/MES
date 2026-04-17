@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import {Worker} from './worker.js';
-import {Building} from "./building";
-import { Sky } from './sky.js';
-import {generateRuler, startTimeline, updateTimeline} from "./timeline";
-import {Tile} from "./tile";
-import { GitHubCommitAPI } from './api.js';
+import {Worker} from './workers/worker.js';
+import {Building} from "./components/building";
+import { Sky } from './components/sky.js';
+import {generateRuler, startTimeline, updateTimeline} from "./utils/timeline";
+import {Tile} from "./components/tile";
+import { GitHubCommitAPI } from './api/api.js';
 
 // Scene
 const scene = new THREE.Scene();
