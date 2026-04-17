@@ -66,7 +66,7 @@ scene.add(sky);
 
 
 // Floor
-const tile = new Tile(1000, 100);
+const tile = new Tile(100, 10);
 scene.add(tile);
 const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
@@ -75,7 +75,7 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 // Rotate to lie flat (XZ plane)
 floor.rotation.x = -Math.PI / 2;
 
-scene.add(floor);
+//scene.add(floor);
 
 const clock = new THREE.Timer();
 
@@ -127,7 +127,7 @@ function onClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Array of objects to test for intersection
-    const intersects = raycaster.intersectObjects([building, tile, ...activeWorkers],true);
+    const intersects = raycaster.intersectObjects([building, ...activeWorkers],true);
 
     if (intersects.length > 0) {
         let objectHit = intersects[0].object;
@@ -151,6 +151,8 @@ async function clo(){
     scene.add(worker);
     activeWorkers.push(worker);
 }
+
+
 startTimeline()
 animate();
 

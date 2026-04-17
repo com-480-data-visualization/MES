@@ -10,6 +10,11 @@
 </head>
 <body>
 <script type="module" src="/test.js"></script>
+<div class="modal" id="myModal">
+    <h1>MES</h1>
+    <input type="text" placeholder="url">
+    <button onclick="hideModal()">submit</button>
+</div>
 
 <div id="container">
     <div id="box1" class="box">
@@ -22,5 +27,11 @@
     <div id="ruler" style="height:50px; display:flex; position:absolute; left:0; width: 100%"></div>
     <div id="marker" style="width: 3px; height: 50px; background:red; position:absolute; left:50%; transform:translateX(-50%);"></div>
 </div>
+<script>
+    function hideModal(){
+        myModal.style.display="none";
+    }
+</script>
 </body>
+
 </html>
