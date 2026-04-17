@@ -117,9 +117,9 @@ We are also inspired by the concept of Gamification in Productivity, exploring h
 ## Milestone 2 (17th April, 5pm)
 
 **10% of the final grade**
-The report can be found here: [Report](Milestone2DataViz.pdf)
-[Link to the website](https://com-480-data-visualization.github.io/MES/)
-[Link to the Figma sketch](https://www.figma.com/proto/mw3akGDWHF63UWxHszbNUT/Sin-t%C3%ADtulo?node-id=2-57&t=gigjwsghe1Kr08Ma-1&scaling=contain&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=2%3A57)
+- The report can be found here: [Report](Milestone2DataViz.pdf)
+- [Link to the website](https://com-480-data-visualization.github.io/MES/)
+- [Link to the Figma sketch](https://www.figma.com/proto/mw3akGDWHF63UWxHszbNUT/Sin-t%C3%ADtulo?node-id=2-57&t=gigjwsghe1Kr08Ma-1&scaling=contain&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=2%3A57)
 
 
 ## Milestone 3 (29th May, 5pm)
