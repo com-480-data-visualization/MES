@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {Worker} from '../components/worker.js';
+import {palette} from "../utils/palette.js";
 
 
 const welcomeOverlay = document.getElementById("welcomeOverlay");
@@ -11,6 +12,7 @@ const mainCameraPosition = new THREE.Vector3(42, 34, 48);
 const mainCameraTarget = new THREE.Vector3(0, 2.5, 0);
 const cameraTarget = welcomeCameraTarget.clone();
 let welcomeWorker = {}
+let welcomeCameraLight = null;
 
 let onGoingTransition = false;
 let transitionTime = 0;
@@ -27,9 +29,25 @@ function smoothStep(t) {
     return t * t * (3 - 2 * t);
 }
 
+function createWelcomeCameraLight() {
+    const light = new THREE.PointLight(palette.sun, 7, 90, 1.4);
+    light.position.copy(welcomeCameraPosition);
+    return light;
+}
+
+function setWelcomeCameraLightEnabled(enabled) {
+    if (!welcomeCameraLight) {
+        return;
+    }
+
+    welcomeCameraLight.visible = enabled;
+    welcomeCameraLight.intensity = enabled ? 7 : 0;
+}
+
 function startVisualizationTransition(camera,controls) {
     transitionTime = 0;
     applyCameraPose(camera,controls,welcomeCameraPosition, welcomeCameraTarget);
+    setWelcomeCameraLightEnabled(false);
     welcomeOverlay.classList.add("is-leaving");
 }
 
@@ -94,6 +112,8 @@ export async function setupWelcome(scene,camera,controls){
     onGoingTransition = false;
 
     scene.add(welcomeWorker);
+    welcomeCameraLight = createWelcomeCameraLight();
+    scene.add(welcomeCameraLight);
 
     camera.position.copy(welcomeCameraPosition);
     camera.lookAt(cameraTarget);

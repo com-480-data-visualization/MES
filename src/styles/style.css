@@ -5,8 +5,8 @@
     --color-floor: #cccccc;
     --color-grid: #aaaaaa;
     --color-accent: #00ffcc;
-    --color-sky: #004cfe;
-    --color-void: #b353e7;
+    --color-sky: #7393dd;
+    --color-void: #abcae1;
     --color-sun: #ffffff;
     --color-robot-cycle: #ff5500, #00ff55, #5500ff, #ffff00,
         #ff0000, #00ffff, #ff00ff, #0000ff,
@@ -34,6 +34,7 @@ canvas {
     display: block;
 }
 
+/* Welcome overlay styles. (MES title and github repo title)*/
 .welcome-overlay {
     position: fixed;
     inset: 0;
@@ -66,6 +67,7 @@ canvas {
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.36);
 }
 
+/* Data Viz title styles. */
 .welcome-kicker {
     margin: 0 0 10px;
     color: #000000;
@@ -79,18 +81,6 @@ canvas {
     margin: 0 0 28px;
     font-size: clamp(3.8rem, 13vw, 8rem);
     line-height: 0.86;
-}
-
-.welcome-kicker,
-.welcome-panel h1,
-.welcome-form label {
-    -webkit-text-stroke: var(--welcome-title-outline-width) var(--welcome-title-outline-color);
-    paint-order: stroke fill;
-    text-shadow:
-        var(--welcome-title-outline-width) 0 0 var(--welcome-title-outline-color),
-        calc(var(--welcome-title-outline-width) * -1) 0 0 var(--welcome-title-outline-color),
-        0 var(--welcome-title-outline-width) 0 var(--welcome-title-outline-color),
-        0 calc(var(--welcome-title-outline-width) * -1) 0 var(--welcome-title-outline-color);
 }
 
 .welcome-form label {
