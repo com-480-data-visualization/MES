@@ -107,8 +107,7 @@ function startRepositoryCommitPipeline(repoUrl) {
 
 
 async function createCommitterWorker(committer) {
-    const worker = new Worker(world.building.getBaseCoordinates());
-    worker.committer = committer;
+    const worker = new Worker(world.building.getBaseCoordinates(), committer);
     await worker.loadModel();
     scene.add(worker);
     activeWorkers.push(worker);

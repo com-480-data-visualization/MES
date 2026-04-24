@@ -7,11 +7,14 @@ import { getNextRobotColor } from "../utils/palette.js";
 const speed = 0.15
 
 export class Worker extends THREE.Object3D {
-    constructor(baseCoordinates) {
+    constructor(baseCoordinates, committerID = "Unknown") {
         super();
         this.mode = 0
         this.t = 0
         this.buildingCenter = this.getBuildingCenter(baseCoordinates)
+        this.committerID = committerID;
+        this.commiterID = committerID;
+        this.committerLabel = null;
 
         this.loader = new GLTFLoader();
         this.url = "/MES/models/RobotExpressive.glb"
@@ -21,6 +24,7 @@ export class Worker extends THREE.Object3D {
 
         this.c = 0
 
+        this.setCommitterID(committerID);
     }
 
     async loadModel() {
@@ -140,7 +144,60 @@ export class Worker extends THREE.Object3D {
     }
 
     onClick(){
-        updateInfo("mamma mia a worker")
+        updateInfo(`Worker for ${this.committerID}`)
+    }
+
+    setCommitterID(committerID) {
+        this.committerID = committerID || "Unknown";
+        this.commiterID = this.committerID;
+
+        if (this.committerLabel) {
+            this.remove(this.committerLabel);
+            this.committerLabel.material.map.dispose();
+            this.committerLabel.material.dispose();
+        }
+
+        this.committerLabel = this.createCommitterLabel(this.committerID);
+        this.add(this.committerLabel);
+    }
+
+    createCommitterLabel(committerID) {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        const fontSize = 34;
+        const paddingX = 18;
+        const paddingY = 10;
+
+        context.font = `600 ${fontSize}px Arial`;
+        const textWidth = context.measureText(committerID).width;
+        canvas.width = Math.ceil(textWidth + paddingX * 2);
+        canvas.height = fontSize + paddingY * 2;
+
+        context.font = `600 ${fontSize}px Arial`;
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillStyle = "rgba(20, 24, 28, 0.78)";
+        context.roundRect(0, 0, canvas.width, canvas.height, 12);
+        context.fill();
+        context.fillStyle = "#ffffff";
+        context.fillText(committerID, canvas.width / 2, canvas.height / 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            depthTest: false
+        });
+        const label = new THREE.Sprite(material);
+        const aspectRatio = canvas.width / canvas.height;
+
+        label.position.set(0, 3.2, 0);
+        label.scale.set(1.4 * aspectRatio, 1.4, 1);
+        label.renderOrder = 10;
+
+        return label;
     }
 
     faceBuilding(){
