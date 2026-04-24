@@ -2,25 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>three-js-demo</title>
+    <title>MES</title>
     <style>
         body { margin: 0; }
     </style>
-  <script type="module" crossorigin src="/MES/assets/index-COqyjrVD.js"></script>
-  <link rel="stylesheet" crossorigin href="/MES/assets/index-BJhB2avU.css">
+  <script type="module" crossorigin src="/MES/assets/index-DVMkjnJZ.js"></script>
+  <link rel="stylesheet" crossorigin href="/MES/assets/index-B21wPHOc.css">
 </head>
 <body>
-
-<div id="container">
+<main id="welcomeOverlay" class="welcome-overlay">
+    <section class="welcome-panel">
+        <p class="welcome-kicker">Repository visualization</p>
+        <h1>MES</h1>
+        <form id="repoForm" class="welcome-form">
+            <label for="repoUrl">GitHub repository URL</label>
+            <div class="welcome-input-row">
+                <input
+                    id="repoUrl"
+                    name="repoUrl"
+                    type="text"
+                    placeholder="https://github.com/owner/repository"
+                    autocomplete="url"
+                    required
+                >
+                <button type="submit">Enter</button>
+            </div>
+        </form>
+    </section>
+</main>
+<div id="container" class="viz-ui is-hidden">
     <div id="box1" class="box">
-        Mamma mia<br>
+        <span id="repoLabel">Repository selected</span><br>
         <button id="myButton">Click me</button>
     </div>
 </div>
 
-<div class="timeline">
+<div class="timeline viz-ui is-hidden">
     <div id="ruler" style="height:50px; display:flex; position:absolute; left:0; width: 100%"></div>
     <div id="marker" style="width: 3px; height: 50px; background:red; position:absolute; left:50%; transform:translateX(-50%);"></div>
 </div>
 </body>
+
 </html>

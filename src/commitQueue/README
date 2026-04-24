@@ -1,0 +1,20 @@
+```
+main.js
+  |
+  | start(repoUrl)
+  v
+RepositoryCommitPipeline
+  |
+  | creates AsyncQueue
+  |
+  +--> Producer fetches commits from GitHub
+  |       |
+  |       v
+  |     queue.enqueue(commit)
+  |
+  +--> Consumer waits for commits from queue
+          |
+          +--> every commit: update info panel
+          |
+          +--> first time seeing a committer: create one Worker
+```

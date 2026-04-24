@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {updateInfo} from "../utils/pathGenerator";
+import {updateInfo} from "../utils/infoPanel";
 import { palette } from "../utils/palette.js";
 export class Building extends THREE.Object3D {
     constructor(color = palette.building) {

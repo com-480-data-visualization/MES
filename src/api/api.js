@@ -9,10 +9,15 @@ class GitHubCommitAPI {
     /**
      * Fetch commits from a single page
      */
-    async fetchCommit(owner, repo, page, perPage) {
+    async fetchCommit(owner, repo, page, perPage, signal = undefined) {
         const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=${perPage}&page=${page}`;
         const headers = this.token ? { Authorization: `token ${this.token}` } : {};
-        const res = await fetch(url, { headers });
+        const res = await fetch(url, { headers, signal });
+
+        if (!res.ok) {
+            throw new Error(`GitHub request failed with ${res.status}: ${res.statusText}`);
+        }
+
         const commits = await res.json();
         return commits;
     }
@@ -34,13 +39,64 @@ class GitHubCommitAPI {
     }
 
     /**
+     * Stream commits into an async queue as pages arrive.
+     */
+    async fetchCommitsIntoQueue(owner, repo, queue, options = {}) {
+        const perPage = options.perPage ?? 100;
+        let page = 1;
+
+        try {
+            while (true) {
+                const commits = await this.fetchCommit(owner, repo, page, perPage, options.signal);
+                if (commits.length === 0) break;
+
+                commits.forEach((commit) => queue.enqueue(GitHubCommitAPI.getCommitSummary(commit)));
+                page++;
+            }
+
+            queue.close();
+        } catch (error) {
+            if (error.name === "AbortError") {
+                queue.close();
+                return;
+            }
+
+            queue.fail(error);
+        }
+    }
+
+    /**
      * HELPER FUNCTIONS
      */
     // returns an array of [{commiter, message}]
     static getCommitSummary(commit) {
+        const committer = commit.commit.author.name;
+
         return {
-            commiter: commit.commit.author.name,
+            sha: commit.sha,
+            committer,
+            commiter: committer,
+            date: commit.commit.author.date,
             message: commit.commit.message
+        };
+    }
+
+    static parseRepoUrl(repoUrl) {
+        const url = new URL(repoUrl.trim());
+
+        if (url.hostname !== "github.com") {
+            throw new Error("Please enter a github.com repository URL.");
+        }
+
+        const [owner, repo] = url.pathname.replace(/^\/+|\/+$/g, "").split("/");
+
+        if (!owner || !repo) {
+            throw new Error("Please enter a URL like https://github.com/owner/repository.");
+        }
+
+        return {
+            owner,
+            repo: repo.replace(/\.git$/, "")
         };
     }
 
