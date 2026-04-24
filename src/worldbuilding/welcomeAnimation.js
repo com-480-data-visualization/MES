@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {Worker} from '../components/worker.js';
 import {palette} from "../utils/palette.js";
+import {startTimeline} from "../utils/timeline";
 
 
 const welcomeOverlay = document.getElementById("welcomeOverlay");

@@ -1,14 +1,5 @@
 
 
-export function updateTimeline(elapsed){
-    const bar = document.getElementById('progress');
-
-    // Example: 5-second loop
-    const duration = 5;
-    const progress = (elapsed % duration) / duration;
-
-    bar.style.width = (progress * 100) + "%";
-}
 
 const timelineRule = {
     min: 0,
@@ -24,6 +15,7 @@ const ruler = document.getElementById("ruler");
 let ticks = [];
 export function generateRuler() {
     ruler.innerHTML = "";
+    ticks = []
     for (let i = 0; i < timelineRule.visibleTicks; i++) {
         const tick = document.createElement("div");
         tick.className = "ruler-tick";
@@ -50,7 +42,10 @@ function updateRuler() {
 
 // Animate timeline
 let interval;
+let flag = false
 export function startTimeline() {
+    if (flag) return;
+    flag = true;
     timelineRule.marker = 0;
     generateRuler();
 
