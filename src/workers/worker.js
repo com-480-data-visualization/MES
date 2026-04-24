@@ -66,6 +66,9 @@ export class Worker extends THREE.Object3D {
             case 2:
                 this.returnWork(delta)
                 return;
+            case 3:
+                this.dance(delta)
+                return;
             default:
                 return;
 
@@ -88,7 +91,7 @@ export class Worker extends THREE.Object3D {
         this.t += speed * -delta;
         if (this.t <= 0){
             this.t = 0
-            this.mode = 3
+            this.mode = 999
             this.changeAnimation(0)
         }
 
@@ -120,6 +123,17 @@ export class Worker extends THREE.Object3D {
 
         const tangent = this.curve.getTangent(this.t).normalize();
         this.lookAt(this.position.clone().add(tangent));
+    }
+
+    dance(delta){
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+        this.c++
+        if (this.c >= 500){
+            this.c = 0
+            this.mode = 999
+        }
     }
 
     onClick(){

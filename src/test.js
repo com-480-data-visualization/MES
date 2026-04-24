@@ -7,6 +7,29 @@ import {generateRuler, startTimeline, updateTimeline} from "./utils/timeline";
 import {Tile} from "./components/tile";
 import { GitHubCommitAPI } from './api/api.js';
 
+const welcomeOverlay = document.getElementById("welcomeOverlay");
+const repoForm = document.getElementById("repoForm");
+const repoInput = document.getElementById("repoUrl");
+const repoLabel = document.getElementById("repoLabel");
+const vizUiElements = document.querySelectorAll(".viz-ui");
+
+const welcomeCameraPosition = new THREE.Vector3(27, 9, 29);
+const welcomeCameraTarget = new THREE.Vector3(35, 2.5, 43);
+const mainCameraPosition = new THREE.Vector3(42, 34, 48);
+const mainCameraTarget = new THREE.Vector3(0, 2.5, 0);
+const cameraTarget = welcomeCameraTarget.clone();
+
+let experienceState = "welcome";
+let transitionTime = 0;
+const transitionDuration = 3.2;
+
+function applyCameraPose(position, target) {
+    camera.position.copy(position);
+    cameraTarget.copy(target);
+    controls.target.copy(target);
+    camera.lookAt(target);
+}
+
 // Scene
 const scene = new THREE.Scene();
 //scene.background = new THREE.Color(0xfffffff) ;
@@ -18,7 +41,8 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-camera.position.set(3, 3, 5);
+camera.position.copy(welcomeCameraPosition);
+camera.lookAt(cameraTarget);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer();
@@ -33,9 +57,11 @@ scene.add(building)
 //worker
 const worker = new Worker();
 await worker.loadModel()
+worker.visible = false;
 scene.add(worker);
 const worker2 = new Worker();
 await worker2.loadModel()
+worker2.visible = false;
 scene.add(worker2);
 
 let activeWorkers = [worker,worker2]
@@ -46,6 +72,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // smooth movement
 controls.minDistance = 30
 controls.maxDistance = 200
+controls.enabled = false;
+controls.target.copy(cameraTarget);
 
 // API instance
 const api = new GitHubCommitAPI();
@@ -68,14 +96,55 @@ scene.add(sky);
 // Floor
 const tile = new Tile(100, 10);
 scene.add(tile);
-const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
-const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
-const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
-// Rotate to lie flat (XZ plane)
-floor.rotation.x = -Math.PI / 2;
+const welcomeWorker = new Worker();
+welcomeWorker.curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(49, 2.5, 27),
+    new THREE.Vector3(43, 2.5, 32),
+    new THREE.Vector3(36, 2.5, 36),
+    new THREE.Vector3(28, 2.5, 37),
+]);
+welcomeWorker.t = 0;
+await welcomeWorker.loadModel();
+welcomeWorker.scale.setScalar(1.15);
+scene.add(welcomeWorker);
 
-//scene.add(floor);
+function smoothStep(t) {
+    return t * t * (3 - 2 * t);
+}
+
+function startVisualizationTransition() {
+    if (experienceState !== "welcome") {
+        return;
+    }
+
+    experienceState = "transitioning";
+    transitionTime = 0;
+    applyCameraPose(welcomeCameraPosition, welcomeCameraTarget);
+    welcomeOverlay.classList.add("is-leaving");
+
+    const enteredRepo = repoInput.value.trim();
+    if (enteredRepo && repoLabel) {
+        repoLabel.textContent = enteredRepo;
+    }
+}
+
+function finishVisualizationTransition() {
+    experienceState = "visualization";
+    activeWorkers.forEach((worker) => {
+        worker.visible = true;
+    });
+    controls.enabled = true;
+    controls.target.copy(mainCameraTarget);
+    cameraTarget.copy(mainCameraTarget);
+    welcomeOverlay.classList.add("is-hidden");
+    vizUiElements.forEach((element) => element.classList.remove("is-hidden"));
+}
+
+repoForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    startVisualizationTransition();
+});
 
 const clock = new THREE.Timer();
 
@@ -86,15 +155,30 @@ function animate() {
     clock.update()
     const delta = clock.getDelta();
 
-    activeWorkers = activeWorkers.filter(worker => {
-        if (worker.getMode() > 2) {
-            scene.remove(worker);
-            return false; // remove from array
-        }
+    welcomeWorker.update(delta);
+    if (welcomeWorker.getMode() === 1) {
+        welcomeWorker.mode = 3;
+        welcomeWorker.c = 0;
+        welcomeWorker.lookAt(27, 2.5, 29);
+        welcomeWorker.changeAnimation(4); // animation to chose
+    }
+    if (welcomeWorker.getMode() === 999) {
+        welcomeWorker.mode = 0;
+        welcomeWorker.t = 0;
+        welcomeWorker.changeAnimation(10);
+    }
 
-        worker.update(delta);
-        return true; // keep
-    });
+    if (experienceState === "visualization") {
+        activeWorkers = activeWorkers.filter(worker => {
+            if (worker.getMode() > 2) {
+                scene.remove(worker);
+                return false; // remove from array
+            }
+
+            worker.update(delta);
+            return true; // keep
+        });
+    }
 
     // call the api here 
     if (!commitsFetched) {
@@ -109,7 +193,29 @@ function animate() {
 
     //building.upgrade(t)
 
-    controls.update();
+    if (experienceState === "welcome") {
+        applyCameraPose(welcomeCameraPosition, welcomeCameraTarget);
+    }
+
+    if (experienceState === "transitioning") {
+        transitionTime += delta;
+        const progress = Math.min(transitionTime / transitionDuration, 1);
+        const easedProgress = smoothStep(progress);
+
+        camera.position.lerpVectors(welcomeCameraPosition, mainCameraPosition, easedProgress);
+        cameraTarget.lerpVectors(welcomeCameraTarget, mainCameraTarget, easedProgress);
+        camera.lookAt(cameraTarget);
+
+        if (progress >= 1) {
+            finishVisualizationTransition();
+        }
+    }
+
+    if (experienceState === "visualization") {
+        scene.remove(welcomeWorker);
+        controls.update();
+    }
+
     renderer.render(scene, camera);
 }
 
@@ -119,6 +225,10 @@ const mouse = new THREE.Vector2();
 window.addEventListener('click', onClick, false);
 
 function onClick(event) {
+    if (experienceState !== "visualization") {
+        return;
+    }
+
     // Convert mouse position to normalized device coordinates (-1 to +1)
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -148,6 +258,7 @@ button.addEventListener("click", clo);
 async function clo(){
     const worker = new Worker();
     await worker.loadModel()
+    worker.visible = experienceState === "visualization";
     scene.add(worker);
     activeWorkers.push(worker);
 }
@@ -155,5 +266,3 @@ async function clo(){
 
 startTimeline()
 animate();
-
-
