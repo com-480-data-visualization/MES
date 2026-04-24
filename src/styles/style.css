@@ -1,4 +1,21 @@
 
+/* JavaScript scene colors. Update these to customize Three.js objects. */
+:root {
+    --color-building: #0055ff;
+    --color-floor: #cccccc;
+    --color-grid: #aaaaaa;
+    --color-accent: #00ffcc;
+    --color-sky: #004cfe;
+    --color-void: #b353e7;
+    --color-sun: #ffffff;
+    --color-robot-cycle: #ff5500, #00ff55, #5500ff, #ffff00,
+        #ff0000, #00ffff, #ff00ff, #0000ff,
+        #00ff00, #ffa500, #8a2be2, #00ced1,
+        #ff69b4, #7fff00, #4682b4, #daa520;
+    --welcome-title-outline-color: #ffffff;
+    --welcome-title-outline-width: 0.5px;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -24,7 +41,7 @@ canvas {
     display: grid;
     align-items: center;
     padding: 24px;
-    color: #f8fafc;
+    color: #000000;
     font-family: Inter, Arial, sans-serif;
     pointer-events: none;
     transition: opacity 900ms ease, transform 900ms ease;
@@ -51,7 +68,7 @@ canvas {
 
 .welcome-kicker {
     margin: 0 0 10px;
-    color: #a7f3d0;
+    color: #000000;
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -62,6 +79,18 @@ canvas {
     margin: 0 0 28px;
     font-size: clamp(3.8rem, 13vw, 8rem);
     line-height: 0.86;
+}
+
+.welcome-kicker,
+.welcome-panel h1,
+.welcome-form label {
+    -webkit-text-stroke: var(--welcome-title-outline-width) var(--welcome-title-outline-color);
+    paint-order: stroke fill;
+    text-shadow:
+        var(--welcome-title-outline-width) 0 0 var(--welcome-title-outline-color),
+        calc(var(--welcome-title-outline-width) * -1) 0 0 var(--welcome-title-outline-color),
+        0 var(--welcome-title-outline-width) 0 var(--welcome-title-outline-color),
+        0 calc(var(--welcome-title-outline-width) * -1) 0 var(--welcome-title-outline-color);
 }
 
 .welcome-form label {
@@ -147,13 +176,35 @@ canvas {
 #progress {
     height: 100%;
     width: 0%;
-    background: #00ffcc;
+    background: var(--color-accent);
 
     transition: width 0.1s linear;
 }
 
 #ruler {
+    display: flex;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50px;
     transition: left 0.9s linear;
+}
+
+#marker {
+    position: absolute;
+    left: 50%;
+    width: 3px;
+    height: 50px;
+    background: rgb(18, 207, 228);
+    transform: translateX(-50%);
+}
+
+.ruler-tick {
+    height: 50px;
+    border-left: 1px solid black;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 12px;
 }
 
 @media (max-width: 560px) {

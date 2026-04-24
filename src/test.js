@@ -32,7 +32,6 @@ function applyCameraPose(position, target) {
 
 // Scene
 const scene = new THREE.Scene();
-//scene.background = new THREE.Color(0xfffffff) ;
 
 // Camera
 const camera = new THREE.PerspectiveCamera(

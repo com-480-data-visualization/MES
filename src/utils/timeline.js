@@ -26,12 +26,8 @@ export function generateRuler() {
     ruler.innerHTML = "";
     for (let i = 0; i < timelineRule.visibleTicks; i++) {
         const tick = document.createElement("div");
+        tick.className = "ruler-tick";
         tick.style.width = ruler.clientWidth/(timelineRule.visibleTicks-2) + "px";
-        tick.style.borderLeft = "1px solid black";
-        tick.style.height = "50px";
-        tick.style.boxSizing = "border-box";
-        tick.style.textAlign = "center";
-        tick.style.fontSize = "12px";
         tick.textContent = i; // initial value
         ruler.appendChild(tick);
         ticks.push(tick);
@@ -60,6 +56,5 @@ export function startTimeline() {
 
     interval = setInterval(updateRuler, 1000);
 }
-
 
 
