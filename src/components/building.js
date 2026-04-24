@@ -5,17 +5,26 @@ export class Building extends THREE.Object3D {
     constructor(color = palette.building) {
         super();
 
+        this.scale.setScalar(2.5);
         this.elapsed = 0;
-        this.buildTime = 18;
+        this.buildTime = 30;
         this.buildPieces = [];
+        this.wallConfig = {
+            brickWidth: 1.6,
+            brickHeight: 0.55,
+            brickDepth: 0.9,
+            wallWidth: 7,
+            wallDepth: 6,
+            wallRows: 18
+        };
+        this.baseCoordinates = this.createBaseCoordinates();
 
         this.materials = {
             brick: new THREE.MeshBasicMaterial({ color: 0xb85f45 }),
             brickAlt: new THREE.MeshBasicMaterial({ color: 0xd07a55 }),
             mortar: new THREE.MeshBasicMaterial({ color: 0xe6d6c8 }),
-            roof: new THREE.MeshBasicMaterial({ color: 0x7f2f2a }),
-            roofEdge: new THREE.MeshBasicMaterial({ color: 0x5f211d }),
             door: new THREE.MeshBasicMaterial({ color: 0x5b3524 }),
+            roof: new THREE.MeshBasicMaterial({ color: 0x6f4428 }),
             window: new THREE.MeshBasicMaterial({ color }),
             glass: new THREE.MeshBasicMaterial({ color: 0x9dd7ff })
         };
@@ -27,8 +36,8 @@ export class Building extends THREE.Object3D {
     createHouse() {
         this.createFoundation();
         this.createWalls();
-        this.createRoof();
         this.createDetails();
+        this.createFlatRoof();
     }
 
     createFoundation() {
@@ -40,15 +49,11 @@ export class Building extends THREE.Object3D {
     }
 
     createWalls() {
-        const brickWidth = 1.6;
-        const brickHeight = 0.55;
-        const brickDepth = 0.9;
-        const wallWidth = 6;
-        const wallDepth = 5;
-        const wallRows = 8;
+        const {brickWidth, brickHeight, brickDepth, wallWidth, wallDepth, wallRows} = this.wallConfig;
         const startY = 0.45;
         const xStart = -((wallWidth - 1) * brickWidth) / 2;
         const zStart = -((wallDepth - 1) * brickDepth) / 2;
+        const windowSlots = this.createRandomWindowSlots(wallRows, wallWidth, wallDepth);
 
         for (let row = 0; row < wallRows; row++) {
             const y = startY + row * brickHeight;
@@ -67,7 +72,88 @@ export class Building extends THREE.Object3D {
                 this.addBrick(xStart, y, z, brickDepth, brickHeight, brickWidth, row, zIndex, Math.PI / 2);
                 this.addBrick(-xStart, y, z, brickDepth, brickHeight, brickWidth, row, zIndex + wallDepth, Math.PI / 2);
             }
+
+            windowSlots
+                .filter(slot => slot.row === row)
+                .forEach(slot => {
+                    const windowY = y + brickHeight * 0.15;
+
+                    if (slot.face === "front") {
+                        const x = xStart + slot.index * brickWidth + offset;
+                        this.addWindow(x, windowY, -zStart + brickDepth * 0.58);
+                    } else if (slot.face === "back") {
+                        const x = xStart + slot.index * brickWidth + offset;
+                        this.addWindow(x, windowY, zStart - brickDepth * 0.58, Math.PI);
+                    } else if (slot.face === "left") {
+                        const z = zStart + slot.index * brickDepth;
+                        this.addWindow(xStart - brickDepth * 0.58, windowY, z, -Math.PI / 2);
+                    } else if (slot.face === "right") {
+                        const z = zStart + slot.index * brickDepth;
+                        this.addWindow(-xStart + brickDepth * 0.58, windowY, z, Math.PI / 2);
+                    }
+                });
         }
+    }
+
+    createBaseCoordinates() {
+        const {brickWidth, brickDepth, wallWidth, wallDepth} = this.wallConfig;
+        const xStart = -((wallWidth - 1) * brickWidth) / 2;
+        const zStart = -((wallDepth - 1) * brickDepth) / 2;
+        const coordinates = [];
+
+        for (let xIndex = 0; xIndex < wallWidth; xIndex++) {
+            for (let zIndex = 0; zIndex < wallDepth; zIndex++) {
+                coordinates.push({
+                    x: xStart + xIndex * brickWidth,
+                    y: zStart + zIndex * brickDepth
+                });
+            }
+        }
+
+        return coordinates;
+    }
+
+    getBaseCoordinates() {
+        return this.baseCoordinates.map(coordinate => ({
+            x: this.position.x + coordinate.x * this.scale.x,
+            y: this.position.z + coordinate.y * this.scale.z
+        }));
+    }
+
+    createRandomWindowSlots(wallRows, wallWidth, wallDepth) {
+        const slots = [];
+
+        for (let row = 3; row < wallRows; row += 3) {
+            for (let xIndex = 1; xIndex < wallWidth - 1; xIndex++) {
+                const isDoorColumn = xIndex === Math.floor(wallWidth / 2);
+                const isLowFrontRow = row < 6;
+
+                if (!(isDoorColumn && isLowFrontRow) && Math.random() < 0.35) {
+                    slots.push({ face: "front", row, index: xIndex });
+                }
+
+                if (Math.random() < 0.35) {
+                    slots.push({ face: "back", row, index: xIndex });
+                }
+            }
+
+            for (let zIndex = 1; zIndex < wallDepth - 1; zIndex++) {
+                if (Math.random() < 0.3) {
+                    slots.push({ face: "left", row, index: zIndex });
+                }
+
+                if (Math.random() < 0.3) {
+                    slots.push({ face: "right", row, index: zIndex });
+                }
+            }
+        }
+
+        if (slots.length === 0) {
+            slots.push({ face: "front", row: 6, index: 2 });
+            slots.push({ face: "back", row: 9, index: wallWidth - 3 });
+        }
+
+        return slots;
     }
 
     addBrick(x, y, z, width, height, depth, row, index, rotationY = 0) {
@@ -82,68 +168,24 @@ export class Building extends THREE.Object3D {
         this.addBuildPiece(brick);
     }
 
-    createRoof() {
-        const roofLength = 6.6;
-        const roofTileWidth = 1.3;
-        const roofTileDepth = 1.05;
-        const roofTileHeight = 0.28;
-        const roofRows = 4;
-        const roofColumns = 6;
-        const roofAngle = Math.PI / 5;
-        const roofY = 5.25;
-        const zStart = -((roofColumns - 1) * roofTileDepth) / 2;
-
-        for (let row = 0; row < roofRows; row++) {
-            for (let column = 0; column < roofColumns; column++) {
-                const z = zStart + column * roofTileDepth;
-                const xOffset = 1.3 + row * 0.72;
-                const y = roofY + row * 0.42;
-
-                this.addRoofTile(-xOffset, y, z, roofTileWidth, roofTileHeight, roofTileDepth, roofAngle);
-                this.addRoofTile(xOffset, y, z, roofTileWidth, roofTileHeight, roofTileDepth, -roofAngle);
-            }
-        }
-
-        const ridgeGeometry = new THREE.BoxGeometry(0.45, 0.35, roofLength);
-        const ridge = new THREE.Mesh(ridgeGeometry, this.materials.roofEdge);
-        ridge.position.set(0, roofY + 1.55, 0);
-        ridge.castShadow = true;
-        this.addBuildPiece(ridge);
-    }
-
-    addRoofTile(x, y, z, width, height, depth, rotationZ) {
-        const tile = new THREE.Mesh(
-            new THREE.BoxGeometry(width, height, depth),
-            this.materials.roof
-        );
-
-        tile.position.set(x, y, z);
-        tile.rotation.z = rotationZ;
-        tile.castShadow = true;
-
-        this.addBuildPiece(tile);
-    }
-
     createDetails() {
         const door = new THREE.Mesh(
             new THREE.BoxGeometry(1.5, 2.2, 0.16),
             this.materials.door
         );
-        door.position.set(0, 1.25, 2.33);
+        door.position.set(0, 1.25, 2.86);
         this.addBuildPiece(door);
+    }
 
-        this.addWindow(-2.7, 2.8, 2.34);
-        this.addWindow(2.7, 2.8, 2.34);
-        this.addWindow(-4.2, 2.8, 0, Math.PI / 2);
-        this.addWindow(4.2, 2.8, 0, Math.PI / 2);
-
-        const chimney = new THREE.Mesh(
-            new THREE.BoxGeometry(0.8, 1.7, 0.8),
-            this.materials.brick
+    createFlatRoof() {
+        const roof = new THREE.Mesh(
+            new THREE.BoxGeometry(12.2, 0.35, 6.4),
+            this.materials.roof
         );
-        chimney.position.set(2.2, 6.15, -1.6);
-        chimney.castShadow = true;
-        this.addBuildPiece(chimney);
+
+        roof.position.set(0, 10.25, 0);
+        roof.castShadow = true;
+        this.addBuildPiece(roof);
     }
 
     addWindow(x, y, z, rotationY = 0) {
@@ -159,7 +201,8 @@ export class Building extends THREE.Object3D {
             new THREE.BoxGeometry(0.95, 0.85, 0.18),
             this.materials.glass
         );
-        glass.position.set(x, y, z + (rotationY === 0 ? 0.02 : 0));
+        const normal = new THREE.Vector3(Math.sin(rotationY), 0, Math.cos(rotationY));
+        glass.position.set(x + normal.x * 0.02, y, z + normal.z * 0.02);
         glass.rotation.y = rotationY;
         this.addBuildPiece(glass);
     }

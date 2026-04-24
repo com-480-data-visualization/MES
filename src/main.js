@@ -48,6 +48,7 @@ function animate() {
     }else{
         console.log("error")
     }
+    world.building.update(delta);
 
     renderer.render(scene, camera);
 }
@@ -58,7 +59,7 @@ const button = document.getElementById("myButton");
 button.addEventListener("click", clo);
 
 async function clo(){
-    const worker = new Worker();
+    const worker = new Worker(world.building.getBaseCoordinates());
     await worker.loadModel()
     scene.add(worker);
     activeWorkers.push(worker);

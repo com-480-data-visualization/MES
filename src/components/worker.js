@@ -6,16 +6,17 @@ import { getNextRobotColor } from "../utils/palette.js";
 const speed = 0.15
 
 export class Worker extends THREE.Object3D {
-    constructor() {
+    constructor(baseCoordinates) {
         super();
         this.mode = 0
         this.t = 0
+        this.buildingCenter = this.getBuildingCenter(baseCoordinates)
 
         this.loader = new GLTFLoader();
         this.url = "/MES/models/RobotExpressive.glb"
         //this.url = "models/r7v2.glb"
 
-        this.curve = generatePath()
+        this.curve = generatePath(baseCoordinates)
 
         this.c = 0
 
@@ -79,6 +80,7 @@ export class Worker extends THREE.Object3D {
         if (this.mixer) {
             this.mixer.update(delta);
         }
+        this.faceBuilding()
         this.c++
         if (this.c >= 1000){
             this.c = 0
@@ -140,6 +142,37 @@ export class Worker extends THREE.Object3D {
         updateInfo("mamma mia a worker")
     }
 
+    faceBuilding(){
+        this.lookAt(new THREE.Vector3(this.buildingCenter.x, this.position.y, this.buildingCenter.z));
+    }
+
+    getBuildingCenter(baseCoordinates = []){
+        if (baseCoordinates.length === 0) {
+            return {x: 0, z: 0};
+        }
+
+        const bounds = baseCoordinates.reduce((bounds, coordinate) => {
+            const z = coordinate.z ?? coordinate.y;
+
+            return {
+                minX: Math.min(bounds.minX, coordinate.x),
+                maxX: Math.max(bounds.maxX, coordinate.x),
+                minZ: Math.min(bounds.minZ, z),
+                maxZ: Math.max(bounds.maxZ, z)
+            };
+        }, {
+            minX: Infinity,
+            maxX: -Infinity,
+            minZ: Infinity,
+            maxZ: -Infinity
+        });
+
+        return {
+            x: (bounds.minX + bounds.maxX) / 2,
+            z: (bounds.minZ + bounds.maxZ) / 2
+        };
+    }
+
     changeAnimation(n){
 
         const newClip = this.gltf.animations[n];
@@ -155,4 +188,3 @@ export class Worker extends THREE.Object3D {
     }
 
 }
-
