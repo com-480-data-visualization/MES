@@ -1,10 +1,12 @@
 import {createCamera, createRenderer, createScene, createOrbitControls} from "./utils/creators";
-import {createWorld} from "./workers/buildWorld";
+import {createWorld} from "./worldbuilding/buildWorld";
 import {setUpInputs} from "./utils/inputs";
 import {startTimeline} from "./utils/timeline";
 import * as THREE from "three";
 import {GitHubCommitAPI} from "./api/api";
 import {Worker} from "./components/worker";
+import {mainAnimation} from "./worldbuilding/mainAnimation";
+import {setupWelcome, welcomeStandbyAnimation, welcomeTransitionAnimation} from "./worldbuilding/welcomeAnimation";
 
 
 const scene = createScene();
@@ -18,37 +20,40 @@ const world = createWorld(scene)
 let activeWorkers = []
 
 const raycasterEvent = setUpInputs(camera,renderer)
+
 window.addEventListener('click', (event)=>{
     raycasterEvent(event,[world.building,...activeWorkers])}, false);
 
+document.getElementById("repoForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    mode = "transition"
+});
+
 
 const clock = new THREE.Timer();
-
+let mode = "welcome"
+let ongoing = false;
+await setupWelcome(scene,camera,controls)
 function animate() {
     requestAnimationFrame(animate);
-
-
     const delta = clock.update().getDelta()
 
+    if (mode === "welcome") {
+        welcomeStandbyAnimation(activeWorkers,scene,delta,controls)
+    } else if (mode === "transition") {
+        ongoing = welcomeTransitionAnimation(activeWorkers,scene,delta,controls,camera)
+        if (!ongoing) {mode = "visualization"}
+    } else if (mode === "visualization") {
+        activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
+    }else{
+        console.log("error")
+    }
 
-    activeWorkers = activeWorkers.filter(worker => {
-        if (worker.getMode() > 2) {
-            scene.remove(worker);
-            return false; // remove from array
-        }
-
-        worker.update(delta);
-        return true; // keep
-    });
-
-    //building.upgrade(t)
-
-    controls.update();
     renderer.render(scene, camera);
 }
 
 
-
+//PROVISIONAL//////////////////////////////////////
 const button = document.getElementById("myButton");
 button.addEventListener("click", clo);
 
@@ -58,6 +63,6 @@ async function clo(){
     scene.add(worker);
     activeWorkers.push(worker);
 }
-
+////////////////////////////////////////////////////
 startTimeline()
 animate()
