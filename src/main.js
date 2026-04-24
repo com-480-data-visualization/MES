@@ -7,6 +7,7 @@ import {GitHubCommitAPI} from "./api/api";
 import {Worker} from "./components/worker";
 import {mainAnimation} from "./worldbuilding/mainAnimation";
 import {setupWelcome, welcomeStandbyAnimation, welcomeTransitionAnimation} from "./worldbuilding/welcomeAnimation";
+import {startGraph} from "./components/generalCommitsGraph";
 
 
 const scene = createScene();
@@ -67,5 +68,5 @@ async function clo(){
     activeWorkers.push(worker);
 }
 ////////////////////////////////////////////////////
-
+startGraph()
 animate()

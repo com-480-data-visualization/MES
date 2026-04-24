@@ -41,6 +41,7 @@ export class Worker extends THREE.Object3D {
 
                     const mixer = new THREE.AnimationMixer(this.model);
                     const clip = gltf.animations[10]; // pick an animation normal 6
+                    console.log(gltf.animations)
                     const action = mixer.clipAction(clip);
                     action.play();
 

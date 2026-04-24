@@ -36,10 +36,7 @@ export function generatePath(){
 
     return new THREE.CatmullRomCurve3(points);
 
-
 }
-
-
 
 export function updateInfo(info){
     const container = document.getElementById('container');
