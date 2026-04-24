@@ -1,50 +1,37 @@
-export async function startCommitConsumer(queue, isCurrentJob, callbacks = {}, options = {}) {
-    // Maps each committer ID to the list of commits made by that committer.
-    const commitsByCommitter = new Map();
-    // how long to wait after processing each commit before processing the next one; 
-    // this can be used to slow down the visualization if commits are coming in too fast
-    const commitDelay = options.commitDelay ?? 350;
-    let processed = 0;
+import {createWorker} from "../main";
 
-    try {
-        // wait until the queue gives me the next commit; when one arrives, run the loop body
-        for await (const commit of queue) {
-            if (!isCurrentJob()) {
-                break;
-            }
+export function consumeCommits(queue, userRegistry) {
 
-            processed++;
-            callbacks.onCommit?.(commit, processed);
+    let toProcess = 5;
+    let commit
 
-            const committerKey = getCommitterKey(commit);
-            const isNewCommitter = !commitsByCommitter.has(committerKey);
+    for (let i = 0; i < toProcess; i++) {
+        if (queue.size() <= 0) return
+        commit = queue.peek()
 
-            if (isNewCommitter) {
-                commitsByCommitter.set(committerKey, []);
-                await callbacks.onNewCommitter?.(commit.committer, commit);
-            }
+        let commitId = getCommitterKey(commit)
 
-            const committerCommits = commitsByCommitter.get(committerKey);
-            committerCommits.push(commit);
-            callbacks.onCommitterCommitsUpdated?.(commit.committer, committerCommits, commit);
-
-            await delay(commitDelay);
+        if (!userRegistry.has(commitId)) {
+            userRegistry.set(commitId, [commit]);
+            onNewCommiter(commitId)
+        } else {
+            userRegistry.get(commitId).push(commit);
+            onCommit(commitId)
         }
 
-        if (isCurrentJob()) {
-            callbacks.onDone?.(processed, commitsByCommitter.size, commitsByCommitter);
-        }
-    } catch (error) {
-        if (isCurrentJob()) {
-            callbacks.onError?.(error);
-        }
+        queue.advance()
     }
 }
+
 
 function getCommitterKey(commit) {
     return (commit.committer || "Unknown").trim().toLowerCase();
 }
 
-function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+function onCommit(id){
+    return
+}
+
+function onNewCommiter(id) {
+    createWorker(id)
 }

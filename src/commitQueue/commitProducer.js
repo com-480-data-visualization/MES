@@ -1,3 +1,6 @@
-export async function startCommitProducer(api, owner, repo, queue, signal) {
-    await api.fetchCommitsIntoQueue(owner, repo, queue, { signal });
+import {GitHubCommitAPI} from "../api/api";
+
+export function startCommitProducer(owner, repo, queue) {
+    const api = new GitHubCommitAPI()
+    api.fetchCommitsIntoQueue(owner, repo, queue);
 }

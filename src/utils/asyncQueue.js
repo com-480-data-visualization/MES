@@ -1,68 +1,28 @@
 export class AsyncQueue {
     constructor() {
         this.items = [];
-        this.waitingConsumers = [];
-        this.closed = false;
-        this.error = null;
+        this.readIndex = 0;
     }
 
-    enqueue(item) {
-        if (this.closed) {
-            throw new Error("Cannot enqueue into a closed queue.");
-        }
-
-        const consumer = this.waitingConsumers.shift();
-        if (consumer) {
-            consumer.resolve({ value: item, done: false });
-            return;
-        }
-
+    // Producer: adds items
+    push(item) {
         this.items.push(item);
     }
 
-    close() {
-        this.closed = true;
-        this.flushWaitingConsumers();
+    // Consumer: reads next item without removing it
+    peek() {
+        return this.items[this.readIndex];
     }
 
-    fail(error) {
-        this.closed = true;
-        this.error = error;
-        this.flushWaitingConsumers();
-    }
-
-    next() {
-        if (this.items.length > 0) {
-            return Promise.resolve({ value: this.items.shift(), done: false });
+    // Move forward manually when you're done processing
+    advance() {
+        if (this.readIndex < this.items.length) {
+            this.readIndex++;
         }
-
-        if (this.error) {
-            return Promise.reject(this.error);
-        }
-
-        if (this.closed) {
-            return Promise.resolve({ value: undefined, done: true });
-        }
-
-        return new Promise((resolve, reject) => {
-            this.waitingConsumers.push({ resolve, reject });
-        });
     }
 
-    flushWaitingConsumers() {
-        const waiting = this.waitingConsumers.splice(0);
-
-        waiting.forEach(({ resolve, reject }) => {
-            if (this.error) {
-                reject(this.error);
-                return;
-            }
-
-            resolve({ value: undefined, done: true });
-        });
-    }
-
-    [Symbol.asyncIterator]() {
-        return this;
+    // Optional: how many unread items exist
+    size() {
+        return this.items.length - this.readIndex;
     }
 }

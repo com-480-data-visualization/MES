@@ -11,3 +11,11 @@ export function updateInfo(info){
 
     container.appendChild(newBox);
 }
+
+export function formatCommitInfo(commit, count) {
+    const shortSha = commit.sha.slice(0, 7);
+    const firstLine = commit.message.split("\n")[0];
+
+    return `#${count} ${shortSha} by ${commit.committer}: ${firstLine}`;
+}
+

@@ -22,21 +22,6 @@ class GitHubCommitAPI {
         return commits;
     }
 
-    /**
-     * Fetch all commits with pagination
-     */
-    async fetchAllCommits(owner, repo) {
-        const perPage = 100; // max allowed by GitHub
-        let page = 1;
-        let allCommits = [];
-        while (true) {
-            const commits = await this.fetchCommit(owner, repo, page, perPage);
-            if (commits.length === 0) break; // no more commits
-            allCommits = allCommits.concat(commits);
-            page++;
-        }
-        return allCommits;
-    }
 
     /**
      * Stream commits into an async queue as pages arrive.
@@ -45,24 +30,15 @@ class GitHubCommitAPI {
         const perPage = options.perPage ?? 100;
         let page = 1;
 
-        try {
-            while (true) {
-                const commits = await this.fetchCommit(owner, repo, page, perPage, options.signal);
-                if (commits.length === 0) break;
 
-                commits.forEach((commit) => queue.enqueue(GitHubCommitAPI.getCommitSummary(commit)));
-                page++;
-            }
+        while (true) {
+            const commits = await this.fetchCommit(owner, repo, page, perPage);
+            if (commits.length === 0) break;
 
-            queue.close();
-        } catch (error) {
-            if (error.name === "AbortError") {
-                queue.close();
-                return;
-            }
-
-            queue.fail(error);
+            commits.forEach((commit) => queue.push(GitHubCommitAPI.getCommitSummary(commit)));
+            page++;
         }
+
     }
 
     /**
@@ -133,40 +109,3 @@ class GitHubCommitAPI {
 export { GitHubCommitAPI };
 
 
-// (async () => {
-//     // Load token from env or local file "githubtoken"
-//     let token = process.env.GITHUB_TOKEN || null; // optional, helps avoid rate limits
-//     if (!token) {
-//         const { readFile } = await import("node:fs/promises");
-//         try {
-//             token = (await readFile("githubtoken", "utf8")).trim();
-//             process.env.GITHUB_TOKEN = token;
-//         } catch {
-//             // No local token file; proceed unauthenticated
-//         }
-//     }
-
-//     const api = new GitHubCommitAPI(token);
-
-//     const commits = await api.fetchAllCommits("octocat", "Hello-World");
-//     console.log("Total commits fetched:", commits.length);
-//     // console.log("Sample commit:", commits[0]);
-
-
-//     // const grouped = GitHubCommitAPI.groupCommitsByDay(commits);
-//     // console.log("Days with commits:", Object.keys(grouped).length);
-//     // console.log("Commits on 2021-01-01:", grouped);
-
-//     // const byAuthor = GitHubCommitAPI.groupCommitsByAuthor(commits);
-//     // console.log("Authors with commits:", Object.keys(byAuthor).length);
-//     // console.log("Commits by octocat:", byAuthor["The Octocat"]);
-
-//     const summaries = commits.map(GitHubCommitAPI.getCommitSummary);
-//     console.log("Commit summaries:", summaries);
-
-//     const linuxCommits = await api.fetchAllCommits("chenedwin54288", "SPSoC");
-//     console.log("Total Linux commits fetched:", linuxCommits.length);
-
-//     const linuxSummaries = linuxCommits.map(GitHubCommitAPI.getCommitSummary);
-//     console.log("Linux commit summaries:", linuxSummaries);
-// })();
