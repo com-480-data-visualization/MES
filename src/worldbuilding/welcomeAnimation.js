@@ -60,6 +60,7 @@ export function welcomeStandbyAnimation(activeWorkers,scene,delta,controls) {
 export function welcomeTransitionAnimation(activeWorkers,scene,delta, controls, camera) {
     if (!onGoingTransition) {
         onGoingTransition = true;
+        scene.remove(welcomeWorker)
         startVisualizationTransition(camera,controls)
     }
 

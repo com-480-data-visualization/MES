@@ -1,9 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls";
 
-const welcomeCameraPosition = new THREE.Vector3(27, 9, 29);
-const welcomeCameraTarget = new THREE.Vector3(35, 2.5, 43);
-const cameraTarget = welcomeCameraTarget.clone();
 
 export function createScene(){
     return new THREE.Scene();
