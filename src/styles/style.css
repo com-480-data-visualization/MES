@@ -42,7 +42,7 @@ canvas {
     display: grid;
     align-items: center;
     padding: 24px;
-    color: #000000;
+    color: #ffffff;
     font-family: Inter, Arial, sans-serif;
     pointer-events: none;
     transition: opacity 900ms ease, transform 900ms ease;
@@ -70,7 +70,7 @@ canvas {
 /* Data Viz title styles. */
 .welcome-kicker {
     margin: 0 0 10px;
-    color: #000000;
+    color: #a7f3d0;
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.08em;

@@ -30,6 +30,7 @@ export function createOrbitControls(camera,renderer){
     controls.enableDamping = true; // smooth movement
     controls.minDistance = 30
     controls.maxDistance = 200
+    controls.maxPolarAngle = Math.PI / 2;
 
     return controls;
 }
