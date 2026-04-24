@@ -42,7 +42,10 @@ function animate() {
         welcomeStandbyAnimation(activeWorkers,scene,delta,controls)
     } else if (mode === "transition") {
         ongoing = welcomeTransitionAnimation(activeWorkers,scene,delta,controls,camera)
-        if (!ongoing) {mode = "visualization"}
+        if (!ongoing) {
+            mode = "visualization";
+            startTimeline();
+        }
     } else if (mode === "visualization") {
         activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
     }else{
@@ -64,5 +67,5 @@ async function clo(){
     activeWorkers.push(worker);
 }
 ////////////////////////////////////////////////////
-startTimeline()
+
 animate()
