@@ -51,7 +51,7 @@ function animate() {
         ongoing = welcomeTransitionAnimation(activeWorkers,scene,delta,controls,camera)
         if (!ongoing) {
             mode = "visualization";
-            startTimeline();
+            startTimeline()
         }
     } else if (mode === "visualization") {
         activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
@@ -76,3 +76,9 @@ export async function createWorker(id) {
 
 startTimeline()
 animate()
+
+if (import.meta.hot) {
+    import.meta.hot.dispose(() => {
+        renderer.dispose();
+    });
+}
