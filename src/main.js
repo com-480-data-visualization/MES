@@ -81,6 +81,7 @@ export function getWorker(id) {
     return workers.get(id)
 }
 
+
 export function setBuilding(time){
     world.building.setDuration(time)
 }

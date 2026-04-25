@@ -206,3 +206,17 @@ canvas {
         min-height: 48px;
     }
 }
+
+.commits-container {
+    max-height: 120px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.commit {
+    padding: 6px;
+    margin-bottom: 5px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}

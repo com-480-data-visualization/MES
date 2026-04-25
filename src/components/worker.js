@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {generatePath} from "../utils/pathGenerator";
-import {updateInfo} from "../utils/infoPanel";
+import {renderInfo} from "../utils/infoPanel";
 import { getNextRobotColor } from "../utils/palette.js";
 
 const speed = 0.15
@@ -161,7 +161,7 @@ export class Worker extends THREE.Object3D {
     }
 
     onClick(){
-        updateInfo(`Worker for ${this.committerID}`)
+        renderInfo(this.committerID)
     }
 
 

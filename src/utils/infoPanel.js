@@ -5,17 +5,53 @@ export function updateInfo(info){
         container.removeChild(container.lastChild);
     }
 
-    const newBox = document.createElement('div');
-    newBox.classList.add('box');
-    newBox.textContent = info;
-
-    container.appendChild(newBox);
+    container.appendChild(info);
 }
 
-export function formatCommitInfo(commit, count) {
-    const shortSha = commit.sha.slice(0, 7);
-    const firstLine = commit.message.split("\n")[0];
+let render = false
+let id = ""
+let userregistry
+export function renderInfo(userid){
+    console.log(userregistry)
+    if (userregistry === undefined) return
+    render = true
+    id = userid;
+    console.log(userid);
+    console.log(userregistry)
+    let commits = userregistry.get(userid);
+    const graph = renderGraph(commits)
+    const Table = renderCommits(commits)
 
-    return `#${count} ${shortSha} by ${commit.committer}: ${firstLine}`;
+    const element = document.createElement("div").appendChild(graph).appendChild(Table)
+    updateInfo(element)
 }
+
+
+export function updateInfoWorker(userRegistry) {
+    userregistry = userRegistry;
+    if (id === undefined || !render) return
+    renderInfo(id)
+}
+
+function renderGraph(commits) {
+    return document.createElement('div');
+}
+
+function renderCommits(commits) {
+    const container = document.createElement("div");
+    container.className = "commits-container";
+
+    commits.forEach(commit => {
+        const item = document.createElement("div");
+        item.className = "commit";
+
+        item.textContent = commit.message;
+        container.appendChild(item);
+    });
+
+    return container;
+}
+
+
+
 

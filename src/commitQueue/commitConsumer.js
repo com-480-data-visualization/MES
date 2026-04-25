@@ -1,5 +1,6 @@
 import {createWorker, getWorker, reviveWorker} from "../main";
 import {addToGraph} from "../components/generalCommitsGraph";
+import {updateInfoWorker} from "../utils/infoPanel";
 
 
 export function consumeCommits(queue, userRegistry, building) {
@@ -20,7 +21,11 @@ export function consumeCommits(queue, userRegistry, building) {
         }
 
     }
-    if (commits.length > 0) addToGraph(commits)
+    if (commits.length > 0) {
+        addToGraph(commits)
+        updateInfoWorker(userRegistry)
+    }
+
     building.update(commits.length)
 }
 
