@@ -22,7 +22,26 @@ export class Worker extends THREE.Object3D {
 
         this.c = 0
 
-        this.setCommitterID(committerID);
+        this.modes = {
+            "Dance": 0,
+            "Death": 1,
+            "Idle": 2,
+            "Jump": 3,
+            "No": 4,
+            "Punch": 5,
+            "Running": 6,
+            "Sitting": 7,
+            "Standing": 8,
+            "ThumbsUp": 9,
+            "Walking": 10,
+            "WalkJump": 11,
+            "Wave": 12,
+            "Yes": 13,
+            "work": 5,
+            "goWork": 10,
+            "returnWork": 6
+        }
+
     }
 
     async loadModel() {
@@ -45,7 +64,6 @@ export class Worker extends THREE.Object3D {
 
                     const mixer = new THREE.AnimationMixer(this.model);
                     const clip = gltf.animations[10]; // pick an animation normal 6
-                    console.log(gltf.animations)
                     const action = mixer.clipAction(clip);
                     action.play();
 
@@ -89,7 +107,7 @@ export class Worker extends THREE.Object3D {
         if (this.c >= 1000){
             this.c = 0
             this.mode = 2
-            this.changeAnimation(6)
+            this.changeAnimation("Running")
         }
     }
 
@@ -98,7 +116,7 @@ export class Worker extends THREE.Object3D {
         if (this.t <= 0){
             this.t = 0
             this.mode = 999
-            this.changeAnimation(0)
+            this.changeAnimation("Walking")// 0
         }
 
         if (this.mixer) {
@@ -117,7 +135,7 @@ export class Worker extends THREE.Object3D {
         if (this.t >= 1){
             this.t = 1
             this.mode = 1
-            this.changeAnimation(5)
+            this.changeAnimation("Punch")
         }
 
         if (this.mixer) {
@@ -144,10 +162,6 @@ export class Worker extends THREE.Object3D {
 
     onClick(){
         updateInfo(`Worker for ${this.committerID}`)
-    }
-
-    setCommitterID(committerID) {
-        this.committerID = committerID || "Unknown";
     }
 
 
@@ -182,7 +196,8 @@ export class Worker extends THREE.Object3D {
         };
     }
 
-    changeAnimation(n){
+    changeAnimation(name){
+        const n = this.modes[name]
 
         const newClip = this.gltf.animations[n];
         const newAction = this.mixer.clipAction(newClip);
@@ -194,6 +209,10 @@ export class Worker extends THREE.Object3D {
 
     getMode(){
         return this.mode;
+    }
+
+    setMode(newMode){
+        this.mode = newMode;
     }
 
 }

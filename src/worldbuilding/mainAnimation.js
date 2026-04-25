@@ -11,7 +11,6 @@ export function mainAnimation(activeWorkers,scene,delta,controls){
         return true; // keep
     });
 
-    //building.upgrade(t)
 
     controls.update();
     return activeWorkers

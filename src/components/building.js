@@ -7,7 +7,8 @@ export class Building extends THREE.Object3D {
 
         this.scale.setScalar(2.5);
         this.elapsed = 0;
-        this.buildTime = 30;
+        this.buildTime = 0;
+        this.ready = false
         this.buildPieces = [];
         this.wallConfig = {
             brickWidth: 1.6,
@@ -214,8 +215,13 @@ export class Building extends THREE.Object3D {
     }
 
     update(delta) {
+        if (!this.ready) return
         this.elapsed = Math.min(this.elapsed + delta, this.buildTime);
         this.setBuildProgress(this.elapsed / this.buildTime);
+    }
+    setDuration(duration) {
+        this.buildTime = duration;
+        this.ready = true;
     }
 
     setBuildProgress(progress) {

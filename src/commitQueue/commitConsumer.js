@@ -1,13 +1,13 @@
-import {createWorker} from "../main";
+import {createWorker, getWorker, reviveWorker} from "../main";
+import {addToGraph} from "../components/generalCommitsGraph";
 
-export function consumeCommits(queue, userRegistry) {
 
-    let toProcess = 5;
-    let commit
+export function consumeCommits(queue, userRegistry, building) {
 
-    for (let i = 0; i < toProcess; i++) {
-        if (queue.size() <= 0) return
-        commit = queue.peek()
+    if (queue.size() <= 0) return
+    const commits = queue.peekAndAdvance();
+
+    for (const commit of commits) {
 
         let commitId = getCommitterKey(commit)
 
@@ -19,8 +19,9 @@ export function consumeCommits(queue, userRegistry) {
             onCommit(commitId)
         }
 
-        queue.advance()
     }
+    if (commits.length > 0) addToGraph(commits)
+    building.update(commits.length)
 }
 
 
@@ -29,6 +30,13 @@ function getCommitterKey(commit) {
 }
 
 function onCommit(id){
+    const w = getWorker(id)
+    if (w.getMode()===1){
+        w.c = 0
+    } else {
+        w.setMode(0)
+    }
+    reviveWorker(id);
     return
 }
 

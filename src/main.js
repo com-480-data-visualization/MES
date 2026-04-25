@@ -7,7 +7,6 @@ import {Worker} from "./components/worker";
 import {mainAnimation} from "./worldbuilding/mainAnimation";
 import {setupWelcome, welcomeStandbyAnimation, welcomeTransitionAnimation} from "./worldbuilding/welcomeAnimation";
 import {startGraph} from "./components/generalCommitsGraph";
-import {updateInfo} from "./utils/infoPanel";
 import {manageCommits, setUpCommitPipeline} from "./commitQueue/repositoryCommitPipeline";
 import {AsyncQueue} from "./utils/asyncQueue";
 
@@ -23,16 +22,18 @@ const world = createWorld(scene)
 let activeWorkers = []
 const queue = new AsyncQueue()
 const userRegistry = new Map()
+const workers = new Map()
+let infoRepo = false
 
 
 const raycasterEvent = setUpInputs(camera,renderer)
 
 window.addEventListener('click', (event)=>{
     raycasterEvent(event,[world.building,...activeWorkers])}, false);
-
-document.getElementById("repoForm").addEventListener("submit", (event) => {
+document.getElementById("repoForm").addEventListener("submit",  async (event) => {
     event.preventDefault();
-    if (!setUpCommitPipeline(event.target.repoUrl.value,queue)) return;
+    infoRepo = await setUpCommitPipeline(event.target.repoUrl.value, queue)
+    if (infoRepo === false) return;
     mode = "transition"
 });
 
@@ -56,11 +57,11 @@ function animate() {
         }
     } else if (mode === "visualization") {
         activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
-        manageCommits(delta,queue, userRegistry)
+        manageCommits(delta,queue, userRegistry, world.building)
     }else{
         console.log("error")
     }
-    world.building.update(delta);
+
 
     renderer.render(scene, camera);
 }
@@ -72,10 +73,27 @@ export async function createWorker(id) {
     await worker.loadModel();
     scene.add(worker);
     activeWorkers.push(worker);
+    workers.set(id, worker);
+}
+
+export function getWorker(id) {
+    return workers.get(id)
+}
+
+export function setBuilding(time){
+    world.building.setDuration(time)
+}
+
+export function reviveWorker(id){
+    const w = workers.get(id)
+    if (!activeWorkers.includes(w)) {
+        activeWorkers.push(w);
+        console.log("pushin")
+    }
+    scene.add(w)
 }
 
 
-startTimeline()
 startGraph()
 animate()
 

@@ -2,26 +2,62 @@ export class AsyncQueue {
     constructor() {
         this.items = [];
         this.readIndex = 0;
+        this.baseHour = 0
+        this.lock = false
     }
 
-    // Producer: adds items
     push(item) {
         this.items.push(item);
     }
 
-    // Consumer: reads next item without removing it
+    // returns all commits in same hour
     peek() {
-        return this.items[this.readIndex];
+        if (this.readIndex >= this.items.length) return [];
+
+
+        const result = [];
+        let i = this.readIndex;
+
+
+        while (i < this.items.length && this.items[i].hours <= this.baseHour) {
+            result.push(this.items[i]);
+            i++;
+        }
+
+        return result;
     }
 
-    // Move forward manually when you're done processing
+    // advance past entire hour group
     advance() {
-        if (this.readIndex < this.items.length) {
+        if (this.readIndex >= this.items.length) return;
+
+
+        while (
+            this.readIndex < this.items.length &&
+            this.items[this.readIndex].hours === this.baseHour
+            ) {
             this.readIndex++;
         }
+        this.baseHour++;
+    }
+    peekAndAdvance() {
+        if (this.lock) return;
+        this.lock = true;
+        const result = [];
+        let i = this.readIndex;
+
+
+        while (i < this.items.length && this.items[i].hours <= this.baseHour) {
+            result.push(this.items[i]);
+            i++;
+        }
+        this.readIndex = i
+        this.baseHour++;
+        this.lock = false
+
+        return result;
     }
 
-    // Optional: how many unread items exist
     size() {
         return this.items.length - this.readIndex;
     }

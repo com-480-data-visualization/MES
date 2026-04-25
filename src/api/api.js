@@ -1,9 +1,14 @@
+import {Building} from "../components/building";
+import {setBuilding} from "../main";
+
 /**
  * GitHub Commit API Class
  */
 class GitHubCommitAPI {
-    constructor(token = null) {
+    constructor(lastPage = 1,oldDate = null, token = null) {
         this.token = token;
+        this.lastPage = lastPage
+        this.oldDate = oldDate;
     }
 
     /**
@@ -21,22 +26,20 @@ class GitHubCommitAPI {
         const commits = await res.json();
         return commits;
     }
-
-
     /**
      * Stream commits into an async queue as pages arrive.
      */
     async fetchCommitsIntoQueue(owner, repo, queue, options = {}) {
         const perPage = options.perPage ?? 100;
-        let page = 1;
+        let page = this.lastPage;
 
 
-        while (true) {
+        while (page > 0) {
             const commits = await this.fetchCommit(owner, repo, page, perPage);
             if (commits.length === 0) break;
 
-            commits.forEach((commit) => queue.push(GitHubCommitAPI.getCommitSummary(commit)));
-            page++;
+            commits.reverse().forEach((commit) => queue.push(this.getCommitSummary(commit)));
+            page--;
         }
 
     }
@@ -45,14 +48,19 @@ class GitHubCommitAPI {
      * HELPER FUNCTIONS
      */
     // returns an array of [{commiter, message}]
-    static getCommitSummary(commit) {
+    getCommitSummary(commit) {
         const committer = commit.commit.author.name;
+        const newDate = new Date(commit.commit.author.date);
+        const diffMs = newDate - this.oldDate;
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
 
         return {
             sha: commit.sha,
             committer,
             commiter: committer,
             date: commit.commit.author.date,
+            hours: diffHours,
             message: commit.commit.message
         };
     }
