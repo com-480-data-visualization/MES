@@ -2,6 +2,7 @@ import {GitHubCommitAPI} from "../api/api";
 import {startCommitProducer} from "./commitProducer";
 import {consumeCommits} from "./commitConsumer";
 import {getInfoRepo} from "../utils/repoInfo";
+import {renderLeaderboard} from "../components/leaderboard";
 
 
 export async function setUpCommitPipeline(repoUrl, queue) {
@@ -25,6 +26,7 @@ export function manageCommits(delta,queue,userRegistry, building){
 
     delay = 0
     consumeCommits(queue, userRegistry, building)
+    renderLeaderboard(userRegistry)
 }
 
 

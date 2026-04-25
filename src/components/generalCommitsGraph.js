@@ -12,6 +12,14 @@ const g = svg
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+const clipId = "clip";
+
+svg.append("clipPath")
+    .attr("id", clipId)
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
 // ---- SCALES ----
 const x = d3.scaleTime().range([0, width]);
 const y = d3.scaleLinear().range([height, 0]);
@@ -36,7 +44,8 @@ const line = d3.line()
 const path = g.append("path")
     .attr("fill", "none")
     .attr("stroke", "steelblue")
-    .attr("stroke-width", 2);
+    .attr("stroke-width", 2)
+    .attr("clip-path", `url(#${clipId})`);
 
 // ---- DATA ----
 const data = [];
