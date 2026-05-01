@@ -8,7 +8,7 @@ export function generatePath(baseCoordinates = createDefaultBaseCoordinates()){
     const bounds = getBounds(coordinates);
     const center =  {
         x: (bounds.minX + bounds.maxX) / 2,
-        y: 1,
+        y: 0.5,
         z: (bounds.minZ + bounds.maxZ) / 2
     }
     const theta_max = Math.random() * Math.PI * 2;
