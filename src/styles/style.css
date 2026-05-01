@@ -353,8 +353,38 @@ canvas {
     font-weight: 800;
 }
 
+.committer-graph {
+    height: 120px;
+    padding: 8px 14px 10px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.committer-graph svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.committer-graph path,
+.committer-graph line {
+    stroke-linecap: round;
+}
+
+.committer-graph .domain,
+.committer-graph .tick line {
+    stroke: rgba(248, 250, 252, 0.86);
+}
+
+.committer-graph .tick text {
+    fill: #f8fafc;
+    font-family: Inter, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+}
+
 .commits-list {
-    max-height: 302px;
+    max-height: 182px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #5eead4 rgba(15, 23, 42, 0.72);
