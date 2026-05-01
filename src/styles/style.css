@@ -212,13 +212,14 @@ canvas {
 
 #user-container {
     position: relative;
+    width: 100%;
 }
 
 .info-close-button {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    z-index: 1;
+    top: 14px;
+    right: 12px;
+    z-index: 2;
     width: 24px;
     height: 24px;
     padding: 0;
@@ -314,7 +315,7 @@ canvas {
 }
 
 .commits-container {
-    width: 360px;
+    width: 100%;
     max-height: 360px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.16);
@@ -330,7 +331,7 @@ canvas {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 14px 16px 12px;
+    padding: 14px 52px 12px 16px;
     border-bottom: 1px solid rgba(148, 163, 184, 0.22);
 }
 

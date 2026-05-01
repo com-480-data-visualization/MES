@@ -67,7 +67,7 @@ function renderCommits(commits) {
     header.className = "commits-header";
 
     const title = document.createElement("h3");
-    title.textContent = "Recent commits";
+    title.textContent = commits[0].committer || commits[0].commiter || "Unknown";
 
     const count = document.createElement("span");
     count.className = "commits-count";
