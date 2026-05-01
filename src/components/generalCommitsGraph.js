@@ -26,8 +26,8 @@ const y = d3.scaleLinear().range([height, 0]);
 
 // ---- AXES ----
 const xAxis = d3.axisBottom(x)
-    .ticks(d3.timeHour.every(12))
-    .tickFormat(d3.timeFormat("%H:%M"));
+    .ticks(d3.timeHour.every(24))
+    .tickFormat(d3.timeFormat("%b-%d"));
 
 const xAxisG = g.append("g")
     .attr("transform", `translate(0, ${height})`);
