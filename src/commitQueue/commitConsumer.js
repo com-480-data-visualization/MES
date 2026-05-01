@@ -1,5 +1,6 @@
 import {addToGraph} from "../components/generalCommitsGraph";
 import {updateInfoWorker} from "../utils/infoPanel";
+import {updateCommitChrono} from "../utils/timeline";
 
 
 export function consumeCommits(queue, userRegistry, building, workerApi) {
@@ -23,6 +24,7 @@ export function consumeCommits(queue, userRegistry, building, workerApi) {
     if (commits.length > 0) {
         addToGraph(commits)
         updateInfoWorker(userRegistry)
+        updateCommitChrono(commits.length)
     }
 
     building.update(commits.length)

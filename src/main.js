@@ -91,7 +91,7 @@ function animate() {
         ongoing = welcomeTransitionAnimation(activeWorkers,scene,delta,controls,camera)
         if (!ongoing) {
             mode = "visualization";
-            startTimeline()
+            startTimeline(infoRepo.totalCommits)
         }
     } else if (mode === "visualization") {
         activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
