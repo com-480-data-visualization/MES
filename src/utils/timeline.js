@@ -15,6 +15,10 @@ export function stopTimeline() {
     }
     interval = undefined;
     flag = false;
+    currentCommits = 0;
+    totalSeconds = 0;
+    currentSeconds = 0;
+
 }
 
 export function updateCommitChrono(number) {
