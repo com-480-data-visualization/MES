@@ -1,8 +1,6 @@
 export function updateInfo(info){
     const container = document.getElementById('user-container');
 
-    container.innerHTML = '';
-
     if (!(info instanceof Node)) {
         const textInfo = document.createElement("div");
         textInfo.textContent = info;
@@ -10,17 +8,15 @@ export function updateInfo(info){
     }
 
     info.id = "infoPanel";
-    info.classList.add("closable-info");
-    info.appendChild(renderCloseButton());
-    container.appendChild(info);
+    container.replaceChildren(info, renderCloseButton());
 }
 
 export function closeInfo(event){
     event?.stopPropagation();
 
-    const panel = document.getElementById("infoPanel");
-    if (panel) {
-        panel.remove();
+    const container = document.getElementById("user-container");
+    if (container) {
+        container.replaceChildren();
     }
 
     render = false
@@ -81,5 +77,4 @@ function renderCommits(commits) {
 
     return container;
 }
-
 
