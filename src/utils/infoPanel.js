@@ -5,7 +5,39 @@ export function updateInfo(info){
         container.removeChild(container.lastChild);
     }
 
+    if (!(info instanceof Node)) {
+        const textInfo = document.createElement("div");
+        textInfo.textContent = info;
+        info = textInfo;
+    }
+
+    info.id = "infoPanel";
+    info.classList.add("closable-info");
+    info.appendChild(renderCloseButton());
     container.appendChild(info);
+}
+
+export function closeInfo(event){
+    event?.stopPropagation();
+
+    const panel = document.getElementById("infoPanel");
+    if (panel) {
+        panel.remove();
+    }
+
+    render = false
+    id = ""
+}
+
+function renderCloseButton(){
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "info-close-button";
+    button.setAttribute("aria-label", "Close information panel");
+    button.textContent = "X";
+    button.addEventListener("click", closeInfo);
+
+    return button;
 }
 
 let render = false
@@ -51,7 +83,5 @@ function renderCommits(commits) {
 
     return container;
 }
-
-
 
 

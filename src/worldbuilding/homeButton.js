@@ -1,4 +1,5 @@
 import {resetGraph} from "../components/generalCommitsGraph";
+import {closeInfo} from "../utils/infoPanel";
 import {stopTimeline} from "../utils/timeline";
 import {resetWelcome} from "./welcomeAnimation";
 
@@ -21,10 +22,7 @@ function resetVisualizationState({
 
     document.getElementById("leaderboard").innerHTML = "";
 
-    const infoContainer = document.getElementById("container");
-    while (infoContainer.children.length > 1) {
-        infoContainer.removeChild(infoContainer.lastChild);
-    }
+    closeInfo();
 
     return [];
 }
