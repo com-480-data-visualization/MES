@@ -26,7 +26,7 @@ export function updateCommitChrono(number) {
 
 let currentCommits = 0;
 let totalSeconds;
-let currentSeconds = 564;
+let currentSeconds = 0;
 
 const ring = document.querySelector(".progress-ring");
 const timeText = document.getElementById("time");

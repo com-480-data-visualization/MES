@@ -37,12 +37,9 @@ let render = false
 let id = ""
 let userregistry
 export function renderInfo(userid){
-    console.log(userregistry)
     if (userregistry === undefined) return
     render = true
     id = userid;
-    console.log(userid);
-    console.log(userregistry)
     let commits = userregistry.get(userid);
     const graph = renderGraph(commits)
     const Table = renderCommits(commits)
