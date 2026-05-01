@@ -26,7 +26,6 @@ export function consumeCommits(queue, userRegistry, building, workerApi) {
     }
 
     building.update(commits.length)
-    console.log(userRegistry)
 }
 
 

@@ -22,12 +22,11 @@ export async function setUpCommitPipeline(repoUrl, queue) {
 
 let delay = 0
 let speed = 0.25
-export function manageCommits(delta,queue,userRegistry, building, workerApi){
+export function manageCommits(delta,queue,userRegistry, building, workerApi, totalCommits = 0){
     delay += delta;
     if (delay < speed) return
 
     delay = 0
     consumeCommits(queue, userRegistry, building, workerApi)
-    renderLeaderboard(userRegistry)
+    renderLeaderboard(userRegistry, totalCommits)
 }
-

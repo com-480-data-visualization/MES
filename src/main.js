@@ -95,7 +95,7 @@ function animate() {
         }
     } else if (mode === "visualization") {
         activeWorkers = mainAnimation(activeWorkers,scene,delta,controls)
-        manageCommits(delta,queue, userRegistry, world.building, workerApi)
+        manageCommits(delta,queue, userRegistry, world.building, workerApi, infoRepo.totalCommits)
     }else{
         console.log("error")
     }

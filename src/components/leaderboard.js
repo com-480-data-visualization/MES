@@ -1,27 +1,17 @@
-import {infoRepo} from "../main";
-
-
-function getTopCommitters(userRegistry) {
+function getTopCommitters(userRegistry, totalCommits = 0) {
     return Array.from(userRegistry.entries())
         .map(([userId, commits]) => ({
             userId,
             commitCount: commits.length,
-            progress : commits.length *100 / infoRepo.totalCommits
+            progress: totalCommits > 0 ? commits.length * 100 / totalCommits : 0
         }))
         .sort((a, b) => b.commitCount - a.commitCount)
 }
 
-export function renderLeaderboard(userRegistry) {
-    console.log(
-        userRegistry
-    )
-    const topUsers = getTopCommitters(userRegistry);
-    console.log(topUsers)
-
+export function renderLeaderboard(userRegistry, totalCommits = 0) {
+    const topUsers = getTopCommitters(userRegistry, totalCommits);
     const leaderboard = document.getElementById("leaderboard");
     leaderboard.innerHTML = '';
-    leaderboard.innerHTML += ""
-
 
     topUsers.forEach((item, index) => {
 
