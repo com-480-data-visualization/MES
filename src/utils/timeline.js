@@ -18,6 +18,10 @@ export function stopTimeline() {
     currentCommits = 0;
     totalSeconds = 0;
     currentSeconds = 0;
+    ring.style.strokeDashoffset = circumference;
+    timeText.textContent =
+        `${String(0).padStart(2, "0")}:${String(0).padStart(2, "0")}`;
+
 
 }
 
