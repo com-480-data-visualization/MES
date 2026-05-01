@@ -240,7 +240,7 @@ canvas {
     overflow-y: scroll;
 }
 .leaderboard {
-    max-height: 200px;
+    max-height: 120px;
     padding-top: 10px;
     padding-left: 5px;
 }

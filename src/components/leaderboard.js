@@ -9,11 +9,14 @@ function getTopCommitters(userRegistry) {
             progress : commits.length *100 / infoRepo.totalCommits
         }))
         .sort((a, b) => b.commitCount - a.commitCount)
-        .slice(0, 3);
 }
 
 export function renderLeaderboard(userRegistry) {
+    console.log(
+        userRegistry
+    )
     const topUsers = getTopCommitters(userRegistry);
+    console.log(topUsers)
 
     const leaderboard = document.getElementById("leaderboard");
     leaderboard.innerHTML = '';
