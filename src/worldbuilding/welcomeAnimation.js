@@ -67,12 +67,12 @@ export function welcomeStandbyAnimation(activeWorkers,scene,delta,controls) {
         welcomeWorker.mode = 3;
         welcomeWorker.c = 0;
         welcomeWorker.lookAt(27, 2.5, 29);
-        welcomeWorker.changeAnimation(12); // animation to chose (right now hello)
+        welcomeWorker.changeAnimation("Wave"); // animation to chose (right now hello)
     }
     if (welcomeWorker.getMode() === 999) {
         welcomeWorker.mode = 0;
         welcomeWorker.t = 0;
-        welcomeWorker.changeAnimation(10);
+        welcomeWorker.changeAnimation("Walking");
     }
 }
 
