@@ -1,9 +1,7 @@
 export function updateInfo(info){
-    const container = document.getElementById('container');
+    const container = document.getElementById('user-container');
 
-    if (container.children.length > 1) {
-        container.removeChild(container.lastChild);
-    }
+    container.innerHTML = '';
 
     if (!(info instanceof Node)) {
         const textInfo = document.createElement("div");
