@@ -197,6 +197,7 @@ canvas {
     top: 20px;
     right: 20px;
     z-index: 10;
+    width: min(540px, calc(100vw - 40px));
 
     display: flex;
     flex-direction: column;
@@ -204,6 +205,7 @@ canvas {
 }
 
 .box {
+    width: 100%;
     background: rgba(0,0,0,0.7);
     color: white;
     padding: 10px;
@@ -389,6 +391,7 @@ canvas {
     display: -webkit-box;
     margin: 0 0 8px;
     overflow: hidden;
+    overflow-wrap: anywhere;
     color: #f8fafc;
     font-size: 13px;
     font-weight: 700;
@@ -431,7 +434,7 @@ canvas {
 }
 
 .ld_card {
-    width: 520px;
+    width: 100%;
     background: #101224;
     color: white;
     border-radius: 8px;
