@@ -224,6 +224,13 @@ export class Building extends THREE.Object3D {
         this.ready = true;
     }
 
+    reset() {
+        this.elapsed = 0;
+        this.buildTime = 0;
+        this.ready = false;
+        this.setBuildProgress(0);
+    }
+
     setBuildProgress(progress) {
         const visiblePieces = Math.floor(progress * this.buildPieces.length);
 

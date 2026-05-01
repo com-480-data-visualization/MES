@@ -160,3 +160,14 @@ export function startGraph() {
         render();
     }, { passive: false });
 }
+
+export function resetGraph() {
+    data.length = 0;
+    viewEnd = null;
+    lastpoint = null;
+    renderOn = true;
+
+    path.datum([]).attr("d", null);
+    xAxisG.selectAll("*").remove();
+    yAxisG.selectAll("*").remove();
+}

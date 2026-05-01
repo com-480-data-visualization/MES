@@ -1,6 +1,3 @@
-import {Building} from "../components/building";
-import {setBuilding} from "../main";
-
 /**
  * GitHub Commit API Class
  */
@@ -31,14 +28,16 @@ class GitHubCommitAPI {
      */
     async fetchCommitsIntoQueue(owner, repo, queue, options = {}) {
         const perPage = options.perPage ?? 100;
+        const runId = options.runId ?? queue.runId;
         let page = this.lastPage;
 
 
-        while (page > 0) {
+        while (page > 0 && queue.isRunActive(runId)) {
             const commits = await this.fetchCommit(owner, repo, page, perPage);
+            if (!queue.isRunActive(runId)) break;
             if (commits.length === 0) break;
 
-            commits.reverse().forEach((commit) => queue.push(this.getCommitSummary(commit)));
+            commits.reverse().forEach((commit) => queue.push(this.getCommitSummary(commit), runId));
             page--;
         }
 
@@ -115,5 +114,3 @@ class GitHubCommitAPI {
 
 // Export for use in other modules
 export { GitHubCommitAPI };
-
-

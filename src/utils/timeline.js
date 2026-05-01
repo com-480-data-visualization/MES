@@ -52,4 +52,14 @@ export function startTimeline() {
     interval = setInterval(updateRuler, 1000);
 }
 
+export function stopTimeline() {
+    if (interval) {
+        clearInterval(interval);
+    }
 
+    interval = undefined;
+    flag = false;
+    timelineRule.marker = 0;
+    ticks = [];
+    ruler.innerHTML = "";
+}

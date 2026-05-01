@@ -4,9 +4,33 @@ export class AsyncQueue {
         this.readIndex = 0;
         this.baseHour = 0
         this.lock = false
+        this.runId = 0
     }
 
-    push(item) {
+    startRun() {
+        this.clear();
+        this.runId++;
+        return this.runId;
+    }
+
+    cancelRun() {
+        this.clear();
+        this.runId++;
+    }
+
+    isRunActive(runId) {
+        return runId === this.runId;
+    }
+
+    clear() {
+        this.items = [];
+        this.readIndex = 0;
+        this.baseHour = 0;
+        this.lock = false;
+    }
+
+    push(item, runId = this.runId) {
+        if (runId !== this.runId) return;
         this.items.push(item);
     }
 

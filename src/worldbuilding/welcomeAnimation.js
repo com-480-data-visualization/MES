@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import {Worker} from '../components/worker.js';
 import {palette} from "../utils/palette.js";
-import {startTimeline} from "../utils/timeline";
 
 
 const welcomeOverlay = document.getElementById("welcomeOverlay");
@@ -124,4 +123,27 @@ export async function setupWelcome(scene,camera,controls){
 
     applyCameraPose(camera,controls,welcomeCameraPosition, welcomeCameraTarget);
 
+}
+
+export function resetWelcome(scene,camera,controls) {
+    onGoingTransition = false;
+    transitionTime = 0;
+
+    welcomeOverlay.classList.remove("is-hidden", "is-leaving");
+    vizUiElements.forEach((element) => element.classList.add("is-hidden"));
+
+    if (welcomeWorker && !welcomeWorker.parent) {
+        scene.add(welcomeWorker);
+    }
+
+    if (welcomeWorker.changeAnimation) {
+        welcomeWorker.mode = 0;
+        welcomeWorker.t = 0;
+        welcomeWorker.c = 0;
+        welcomeWorker.changeAnimation("Walking");
+    }
+
+    setWelcomeCameraLightEnabled(true);
+    controls.enabled = false;
+    applyCameraPose(camera,controls,welcomeCameraPosition, welcomeCameraTarget);
 }

@@ -1,9 +1,8 @@
-import {createWorker, getWorker, reviveWorker} from "../main";
 import {addToGraph} from "../components/generalCommitsGraph";
 import {updateInfoWorker} from "../utils/infoPanel";
 
 
-export function consumeCommits(queue, userRegistry, building) {
+export function consumeCommits(queue, userRegistry, building, workerApi) {
 
     if (queue.size() <= 0) return
     const commits = queue.peekAndAdvance();
@@ -14,10 +13,10 @@ export function consumeCommits(queue, userRegistry, building) {
 
         if (!userRegistry.has(commitId)) {
             userRegistry.set(commitId, [commit]);
-            onNewCommiter(commitId)
+            onNewCommiter(commitId, workerApi)
         } else {
             userRegistry.get(commitId).push(commit);
-            onCommit(commitId)
+            onCommit(commitId, workerApi)
         }
 
     }
@@ -34,17 +33,17 @@ function getCommitterKey(commit) {
     return (commit.committer || "Unknown").trim().toLowerCase();
 }
 
-function onCommit(id){
-    const w = getWorker(id)
+function onCommit(id, workerApi){
+    const w = workerApi.getWorker(id)
     if (w.getMode()===1){
         w.c = 0
     } else {
         w.setMode(0)
     }
-    reviveWorker(id);
+    workerApi.reviveWorker(id);
     return
 }
 
-function onNewCommiter(id) {
-    createWorker(id)
+function onNewCommiter(id, workerApi) {
+    workerApi.createWorker(id)
 }

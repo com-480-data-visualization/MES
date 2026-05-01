@@ -8,8 +8,10 @@ import {renderLeaderboard} from "../components/leaderboard";
 export async function setUpCommitPipeline(repoUrl, queue) {
     try {
         const {owner, repo} = GitHubCommitAPI.parseRepoUrl(repoUrl);
+        const runId = queue.startRun();
         const info = await getInfoRepo(owner, repo);
-        startCommitProducer(owner, repo, queue, info.lastPage, info.oldestDate);
+        if (!queue.isRunActive(runId)) return false;
+        startCommitProducer(owner, repo, queue, info.lastPage, info.oldestDate, runId);
         return info
     } catch (e) {
         return false;
@@ -20,14 +22,12 @@ export async function setUpCommitPipeline(repoUrl, queue) {
 
 let delay = 0
 let speed = 0.25
-export function manageCommits(delta,queue,userRegistry, building){
+export function manageCommits(delta,queue,userRegistry, building, workerApi){
     delay += delta;
     if (delay < speed) return
 
     delay = 0
-    consumeCommits(queue, userRegistry, building)
+    consumeCommits(queue, userRegistry, building, workerApi)
     renderLeaderboard(userRegistry)
 }
-
-
 

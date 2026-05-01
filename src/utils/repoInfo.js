@@ -1,4 +1,3 @@
-import {setBuilding} from "../main";
 import {githubtoken} from "./githubtoken";
 
 export async function getInfoRepo(owner, repo) {
@@ -62,7 +61,6 @@ export async function getInfoRepo(owner, repo) {
     const diffMs = newestDate - oldestDate;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-    setBuilding(totalCommits)
     return {
         lastPage,
         diffHours,

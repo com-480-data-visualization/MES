@@ -129,6 +129,32 @@ canvas {
     pointer-events: none;
 }
 
+.home-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: 8px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.72);
+    font: 700 0.95rem Inter, Arial, sans-serif;
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease, opacity 500ms ease;
+}
+
+.home-button:hover {
+    background: rgba(0, 0, 0, 0.88);
+    transform: translateY(-1px);
+}
+
+.home-button:focus-visible {
+    outline: 3px solid #a7f3d0;
+    outline-offset: 3px;
+}
+
 #container {
     position: fixed;
     top: 20px;
