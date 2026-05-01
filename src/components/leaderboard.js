@@ -17,7 +17,7 @@ export function renderLeaderboard(userRegistry) {
 
     const leaderboard = document.getElementById("leaderboard");
     leaderboard.innerHTML = '';
-    leaderboard.innerHTML += "<h3 style='font-weight: bold ; font-family: Arial, sans-serif '>Top Committers</h3>"
+    leaderboard.innerHTML += ""
 
 
     topUsers.forEach((item, index) => {

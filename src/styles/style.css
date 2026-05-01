@@ -228,19 +228,22 @@ canvas {
 
 .ld_card {
     width: 520px;
-    max-height: 200px;
-    overflow-y: scroll;
     background: #101224;
     color: white;
     border-radius: 8px;
-    padding: 0px 20px;
+    padding: 1px 2px;
     box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
 }
 .ld_scrollbar{
     scrollbar-width: thin;
     scrollbar-color: #25e9bd #101224;
+    overflow-y: scroll;
 }
-
+.leaderboard {
+    max-height: 200px;
+    padding-top: 10px;
+    padding-left: 5px;
+}
 .ld_player {
     display: grid;
     grid-template-columns: 60px 1fr 60px;
@@ -292,4 +295,9 @@ canvas {
     color: #777b91;
     font-weight: bold;
     font-family: Arial, sans-serif;
+}
+#ld_header{
+    font-weight: bold ;
+    font-family: Arial, sans-serif;
+    margin: 7px;
 }
