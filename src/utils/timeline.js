@@ -1,65 +1,49 @@
-
-
-
-const timelineRule = {
-    min: 0,
-    marker: 0,
-    steps: 1,      // days per interval
-    visibleTicks: 25 // number of ticks to keep in DOM
-};
-
-
-const ruler = document.getElementById("ruler");
-
-// Initialize visible ticks
-let ticks = [];
-export function generateRuler() {
-    ruler.innerHTML = "";
-    ticks = []
-    for (let i = 0; i < timelineRule.visibleTicks; i++) {
-        const tick = document.createElement("div");
-        tick.className = "ruler-tick";
-        tick.style.width = ruler.clientWidth/(timelineRule.visibleTicks-2) + "px";
-        tick.textContent = i; // initial value
-        ruler.appendChild(tick);
-        ticks.push(tick);
-    }
-}
-
-// Update the ruler by shifting ticks
-function updateRuler() {
-    // Shift ruler by one tick
-    const firstTick = ticks.shift();
-    timelineRule.marker++;
-
-
-    firstTick.textContent = timelineRule.marker + timelineRule.visibleTicks - 1;
-
-    ruler.appendChild(firstTick);
-    ticks.push(firstTick);
-
-}
-
 // Animate timeline
 let interval;
 let flag = false
-export function startTimeline() {
+export function startTimeline(totalcommits) {
     if (flag) return;
     flag = true;
-    timelineRule.marker = 0;
-    generateRuler();
+    totalSeconds = totalcommits
 
-    interval = setInterval(updateRuler, 1000);
+    interval = setInterval(updateChronometer, 1000);
 }
 
 export function stopTimeline() {
     if (interval) {
         clearInterval(interval);
     }
-
     interval = undefined;
     flag = false;
-    timelineRule.marker = 0;
-    ticks = [];
-    ruler.innerHTML = "";
 }
+
+export function updateCommitChrono(number) {
+    currentCommits += number;
+    const progress = currentCommits / totalSeconds;
+    ring.style.strokeDashoffset = circumference * (1 - progress);
+}
+
+
+let currentCommits = 0;
+let totalSeconds;
+let currentSeconds = 564;
+
+const ring = document.querySelector(".progress-ring");
+const timeText = document.getElementById("time");
+
+const radius = 78;
+const circumference = 2 * Math.PI * radius;
+
+ring.style.strokeDasharray = circumference;
+ring.style.strokeDashoffset = 0;
+
+function updateChronometer() {
+    const minutes = Math.floor(currentSeconds / 60);
+    const seconds = currentSeconds % 60;
+
+    timeText.textContent =
+        `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    currentSeconds++;
+}
+

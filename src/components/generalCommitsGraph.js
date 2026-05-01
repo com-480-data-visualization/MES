@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-const svg = d3.select("svg");
+const svg = d3.select("#general-graph");
 
 const margin = { top: 10, right: 10, bottom: 30, left: 40 };
 const width = 500 - margin.left - margin.right;

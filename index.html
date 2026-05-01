@@ -42,7 +42,7 @@
 <div id="container" class="viz-ui is-hidden">
     <div id="box1" class="box">
         <span id="repoLabel">Repository selected</span><br>
-        <svg width="200" height="200"></svg>
+        <svg id="general-graph" width="200" height="200"></svg>
         <main class="ld_card">
             <h3 id="ld_header">Top Committers</h3>
             <div id="leaderboard" class="leaderboard ld_scrollbar"></div>
@@ -51,9 +51,13 @@
     <div id="user-container"></div>
 </div>
 
-<div class="timeline viz-ui is-hidden">
-    <div id="ruler"></div>
-    <div id="marker"></div>
+<div class="chrono viz-ui is-hidden">
+    <svg class="chrono-svg" viewBox="0 0 220 220">
+        <circle class="outer-ring" cx="110" cy="110" r="100" />
+        <circle class="progress-bg" cx="110" cy="110" r="78" />
+        <circle class="progress-ring" cx="110" cy="110" r="78" />
+    </svg>
+    <div class="time" id="time">00:00</div>
 </div>
 </body>
 
