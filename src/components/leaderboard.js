@@ -1,31 +1,41 @@
-
-
+import {infoRepo} from "../main";
 
 
 function getTopCommitters(userRegistry) {
     return Array.from(userRegistry.entries())
         .map(([userId, commits]) => ({
             userId,
-            commitCount: commits.length
+            commitCount: commits.length,
+            progress : commits.length *100 / infoRepo.totalCommits
         }))
         .sort((a, b) => b.commitCount - a.commitCount)
         .slice(0, 3);
 }
 
 export function renderLeaderboard(userRegistry) {
-    const container = document.getElementById("leaderboard");
     const topUsers = getTopCommitters(userRegistry);
 
-    container.innerHTML = "<p>Top Committers</p>";
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.innerHTML = '';
+    leaderboard.innerHTML += "<h3 style='font-weight: bold ; font-family: Arial, sans-serif '>Top Committers</h3>"
 
-    topUsers.forEach((user, index) => {
-        const div = document.createElement("div");
-        div.className = "entry";
-        div.innerHTML = `
-          <span class="rank">#${index + 1}</span>
-          <span>${user.userId}</span>
-          <span>${user.commitCount}</span>
-        `;
-        container.appendChild(div);
+
+    topUsers.forEach((item, index) => {
+
+        leaderboard.innerHTML += `
+        <section class="ld_player">
+          <div class="ld_rank">${index + 1}</div>
+          <div>
+            <div class="ld_bar">
+              <div class="ld_progress" style="width:${item.progress}%" ></div>
+            </div>
+            <div class="ld_name">${item.userId}</div>
+          </div>
+          <div class="ld_level">
+            ${item.commitCount}
+            <small>Commits</small>
+          </div>
+        </section>
+      `;
     });
 }

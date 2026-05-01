@@ -23,7 +23,8 @@ let activeWorkers = []
 const queue = new AsyncQueue()
 const userRegistry = new Map()
 const workers = new Map()
-let infoRepo = false
+export let infoRepo = false
+
 
 
 

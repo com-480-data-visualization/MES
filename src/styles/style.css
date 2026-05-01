@@ -220,3 +220,76 @@ canvas {
     background: #f5f5f5;
     border-radius: 4px;
 }
+
+.ld_layout {
+    display: flex;
+    align-items: center;
+}
+
+.ld_card {
+    width: 520px;
+    max-height: 200px;
+    overflow-y: scroll;
+    background: #101224;
+    color: white;
+    border-radius: 8px;
+    padding: 0px 20px;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
+}
+.ld_scrollbar{
+    scrollbar-width: thin;
+    scrollbar-color: #25e9bd #101224;
+}
+
+.ld_player {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.ld_rank {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
+
+
+.ld_name {
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 8px;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+}
+
+.ld_bar {
+    height: 4px;
+    background: #2d3040;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ld_progress {
+    height: 100%;
+    background: #35f1c2;
+    border-radius: 10px;
+    width: 0;
+    transition: width 1s ease;
+}
+
+.ld_level {
+    text-align: right;
+    color: #b7bac8;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+.ld_level small {
+    display: block;
+    font-size: 8px;
+    color: #777b91;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
