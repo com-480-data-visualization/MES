@@ -28,7 +28,6 @@ function renderCloseButton(){
     button.type = "button";
     button.className = "info-close-button";
     button.setAttribute("aria-label", "Close information panel");
-    button.textContent = "X";
     button.addEventListener("click", closeInfo);
 
     return button;
@@ -77,4 +76,3 @@ function renderCommits(commits) {
 
     return container;
 }
-

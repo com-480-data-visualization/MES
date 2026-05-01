@@ -226,11 +226,27 @@ canvas {
     border-radius: 50%;
     color: #ffffff;
     background: rgba(17, 24, 39, 0.82);
-    font: inherit;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 1;
     cursor: pointer;
+}
+
+.info-close-button::before,
+.info-close-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+}
+
+.info-close-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.info-close-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .info-close-button:hover {
