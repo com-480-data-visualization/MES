@@ -108,10 +108,10 @@ function animate() {
 
 export async function createWorker(id) {
     const worker = new Worker(world.building.getBaseCoordinates(), id);
+    workers.set(id, worker);
     await worker.loadModel();
     scene.add(worker);
     activeWorkers.push(worker);
-    workers.set(id, worker);
 }
 
 export function getWorker(id) {
