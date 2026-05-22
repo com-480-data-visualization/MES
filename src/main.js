@@ -11,6 +11,7 @@ import {manageCommits, setUpCommitPipeline} from "./commitQueue/repositoryCommit
 import {AsyncQueue} from "./utils/asyncQueue";
 import {returnToWelcomeMode} from "./worldbuilding/homeButton";
 import {setupThemeButton} from "./worldbuilding/themeButton";
+import {startBackgroundMusic} from "./utils/backgroundMusic";
 
 
 const scene = createScene();
@@ -44,6 +45,7 @@ function handleSceneClick(event) {
 
 async function handleRepoSubmit(event) {
     event.preventDefault();
+    startBackgroundMusic();
     infoRepo = await setUpCommitPipeline(event.target.repoUrl.value, queue)
     if (infoRepo === false) return;
     world.building.setDuration(infoRepo.totalCommits)
