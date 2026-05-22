@@ -20,15 +20,45 @@
 >
     <span class="home-icon" aria-hidden="true"></span>
 </button>
-<button
-    id="themeButton"
-    class="theme-toggle"
-    type="button"
-    aria-label="Switch to morning mode"
-    title="Switch to morning mode"
->
-    <span class="theme-toggle-icon" aria-hidden="true"></span>
-</button>
+<div class="scene-controls">
+    <button
+        id="settingsButton"
+        class="settings-toggle"
+        type="button"
+        aria-label="Open settings"
+        aria-controls="settingsPanel"
+        aria-expanded="false"
+        title="Open settings"
+    >
+        <span class="settings-toggle-icon" aria-hidden="true"></span>
+    </button>
+    <button
+        id="themeButton"
+        class="theme-toggle"
+        type="button"
+        aria-label="Switch to morning mode"
+        title="Switch to morning mode"
+    >
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+    </button>
+    <section id="settingsPanel" class="settings-panel" hidden>
+        <label class="settings-field" for="musicVolume">
+            <span>Music volume</span>
+            <span id="musicVolumeValue" class="settings-value">25%</span>
+            <input id="musicVolume" type="range" min="0" max="100" step="1" value="25">
+        </label>
+        <label class="settings-field" for="githubTokenInput">
+            <span>GitHub token</span>
+            <input
+                id="githubTokenInput"
+                type="password"
+                placeholder="Personal access token"
+                autocomplete="off"
+                spellcheck="false"
+            >
+        </label>
+    </section>
+</div>
 <main id="welcomeOverlay" class="welcome-overlay">
     <section class="welcome-panel">
         <p class="welcome-kicker">Repository visualization</p>

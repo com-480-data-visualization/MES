@@ -228,11 +228,19 @@ canvas {
     outline-offset: 3px;
 }
 
-.theme-toggle {
+.scene-controls {
     position: fixed;
     right: 20px;
     bottom: 20px;
     z-index: 21;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.theme-toggle,
+.settings-toggle {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -248,27 +256,56 @@ canvas {
     transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.settings-toggle:hover,
+.settings-toggle[aria-expanded="true"] {
     border-color: rgba(0, 255, 204, 0.72);
     color: #00ffcc;
     transform: translateY(-1px) scale(1.04);
 }
 
-.theme-toggle:focus-visible {
+.theme-toggle:focus-visible,
+.settings-toggle:focus-visible {
     outline: 3px solid #a7f3d0;
     outline-offset: 3px;
 }
 
-.theme-toggle-icon {
+.theme-toggle-icon,
+.settings-toggle-icon {
     position: relative;
     display: block;
     width: 24px;
     height: 24px;
 }
 
-.theme-toggle-icon::before {
+.theme-toggle-icon::before,
+.settings-toggle-icon::before,
+.settings-toggle-icon::after {
     content: "";
     position: absolute;
+}
+
+.settings-toggle-icon::before {
+    inset: 7px;
+    border: 3px solid currentColor;
+    border-radius: 50%;
+}
+
+.settings-toggle-icon::after {
+    top: 1px;
+    left: 10px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow:
+        0 18px 0 currentColor,
+        -9px 9px 0 currentColor,
+        9px 9px 0 currentColor,
+        -6px 3px 0 -1px currentColor,
+        6px 3px 0 -1px currentColor,
+        -6px 15px 0 -1px currentColor,
+        6px 15px 0 -1px currentColor;
 }
 
 :root[data-scene-theme="evening"] .theme-toggle-icon::before,
@@ -306,6 +343,74 @@ canvas {
     border-radius: 10px 10px 0 0;
     background: currentColor;
     box-shadow: 0 7px 0 -3px currentColor;
+}
+
+.settings-panel {
+    position: absolute;
+    right: 0;
+    bottom: 68px;
+    width: min(286px, calc(100vw - 40px));
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+    color: #ffffff;
+    background: rgba(16, 18, 36, 0.94);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+    font-family: Inter, Arial, sans-serif;
+}
+
+.settings-panel[hidden] {
+    display: none;
+}
+
+.settings-field {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 9px;
+    align-items: center;
+    margin: 0;
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.settings-field + .settings-field {
+    margin-top: 14px;
+}
+
+.settings-value {
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.settings-field input {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.settings-field input[type="range"] {
+    height: 24px;
+    accent-color: var(--secondary);
+    cursor: pointer;
+}
+
+.settings-field input[type="password"] {
+    min-width: 0;
+    padding: 10px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 6px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    font: inherit;
+}
+
+.settings-field input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.56);
+}
+
+.settings-field input[type="password"]:focus,
+.settings-field input[type="range"]:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
 }
 
 #container {

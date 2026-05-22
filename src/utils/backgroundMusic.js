@@ -3,9 +3,47 @@ const MUSIC_TRACKS = {
     afternoon: `${import.meta.env.BASE_URL}audio/afternoon.mp3`,
     evening: `${import.meta.env.BASE_URL}audio/evening.mp3`
 };
+const DEFAULT_VOLUME = 0.25;
+const VOLUME_STORAGE_KEY = "mesBackgroundMusicVolume";
 
 let music = null;
 let currentTheme = getSceneTheme();
+let currentVolume = getStoredVolume();
+
+function clampVolume(volume) {
+    const parsedVolume = Number(volume);
+
+    if (!Number.isFinite(parsedVolume)) {
+        return DEFAULT_VOLUME;
+    }
+
+    return Math.max(0, Math.min(1, parsedVolume));
+}
+
+function getStoredVolume() {
+    if (typeof window === "undefined") {
+        return DEFAULT_VOLUME;
+    }
+
+    try {
+        const storedVolume = window.localStorage.getItem(VOLUME_STORAGE_KEY);
+        return storedVolume === null ? DEFAULT_VOLUME : clampVolume(storedVolume);
+    } catch (error) {
+        return DEFAULT_VOLUME;
+    }
+}
+
+function storeVolume(volume) {
+    if (typeof window === "undefined") {
+        return;
+    }
+
+    try {
+        window.localStorage.setItem(VOLUME_STORAGE_KEY, String(volume));
+    } catch (error) {
+        console.warn("Background music volume could not be saved:", error);
+    }
+}
 
 function normalizeSceneTheme(theme) {
     if (theme === "day") return "morning";
@@ -26,7 +64,7 @@ function getBackgroundMusic() {
 
     music = new Audio(getTrackForTheme(currentTheme));
     music.loop = true;
-    music.volume = 0.25;
+    music.volume = currentVolume;
     music.preload = "auto";
 
     return music;
@@ -68,7 +106,18 @@ export function pauseBackgroundMusic() {
 }
 
 export function setBackgroundMusicVolume(volume) {
-    getBackgroundMusic().volume = Math.max(0, Math.min(1, volume));
+    currentVolume = clampVolume(volume);
+    storeVolume(currentVolume);
+
+    if (music) {
+        music.volume = currentVolume;
+    }
+
+    return currentVolume;
+}
+
+export function getBackgroundMusicVolume() {
+    return currentVolume;
 }
 
 export function toggleBackgroundMusic() {

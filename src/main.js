@@ -11,6 +11,7 @@ import {manageCommits, setUpCommitPipeline} from "./commitQueue/repositoryCommit
 import {AsyncQueue} from "./utils/asyncQueue";
 import {returnToWelcomeMode} from "./worldbuilding/homeButton";
 import {setupThemeButton} from "./worldbuilding/themeButton";
+import {setupSettingsButton} from "./worldbuilding/settingsButton";
 import {startBackgroundMusic} from "./utils/backgroundMusic";
 
 
@@ -21,6 +22,7 @@ const controls = createOrbitControls(camera,renderer)
 
 const world = createWorld(scene)
 const disposeThemeButton = setupThemeButton(world);
+const disposeSettingsButton = setupSettingsButton();
 
 
 let activeWorkers = []
@@ -150,6 +152,7 @@ if (import.meta.hot) {
         document.getElementById("repoForm").removeEventListener("submit", handleRepoSubmit);
         homeButton.removeEventListener("click", handleHomeClick);
         disposeThemeButton();
+        disposeSettingsButton();
         renderer.dispose();
         renderer.domElement.remove();
     });
