@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 export function updateInfo(info){
     const container = document.getElementById('user-container');
 
@@ -41,11 +43,9 @@ export function renderInfo(userid){
     render = true
     id = userid;
     let commits = userregistry.get(userid);
-    const graph = renderGraph(commits)
-    const Table = renderCommits(commits)
+    const panel = renderCommits(commits)
 
-    const element = document.createElement("div").appendChild(graph).appendChild(Table)
-    updateInfo(element)
+    updateInfo(panel)
 }
 
 
@@ -56,7 +56,76 @@ export function updateInfoWorker(userRegistry) {
 }
 
 function renderGraph(commits) {
-    return document.createElement('div');
+    const container = document.createElement("div");
+    container.className = "committer-graph";
+
+    const svg = d3.select(container)
+        .append("svg")
+        .attr("viewBox", "0 0 500 110")
+        .attr("preserveAspectRatio", "none");
+
+    const margin = {top: 10, right: 10, bottom: 28, left: 38};
+    const width = 500 - margin.left - margin.right;
+    const height = 110 - margin.top - margin.bottom;
+
+    const data = getCommitterGraphData(commits);
+    if (!data.length) return container;
+
+    const g = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const maxTime = d3.max(data, d => d.time);
+    const minTime = Math.max(
+        d3.min(data, d => d.time),
+        maxTime - 1000 * 60 * 60 * 24 * 5
+    );
+
+    const x = d3.scaleTime()
+        .domain([minTime, maxTime])
+        .range([0, width]);
+
+    const y = d3.scaleLinear()
+        .domain([0, (d3.max(data, d => d.value) || 1) * 1.2])
+        .range([height, 0]);
+
+    const line = d3.line()
+        .x(d => x(d.time))
+        .y(d => y(d.value));
+
+    g.append("path")
+        .datum(data.filter(d => d.time >= minTime))
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+    g.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x)
+            .ticks(d3.timeDay.every(1))
+            .tickFormat(d3.timeFormat("%b-%d")));
+
+    g.append("g")
+        .call(d3.axisLeft(y).ticks(4));
+
+    return container;
+}
+
+function getCommitterGraphData(commits) {
+    const commitsByHour = new Map();
+
+    commits.forEach(commit => {
+        if (!commit.date) return;
+        const date = new Date(commit.date);
+        date.setMinutes(0, 0, 0);
+        const time = +date;
+
+        commitsByHour.set(time, (commitsByHour.get(time) || 0) + 1);
+    });
+
+    return Array.from(commitsByHour.entries())
+        .map(([time, value]) => ({time, value}))
+        .sort((a, b) => a.time - b.time);
 }
 
 function renderCommits(commits) {
@@ -76,6 +145,7 @@ function renderCommits(commits) {
     header.appendChild(title);
     header.appendChild(count);
     container.appendChild(header);
+    container.appendChild(renderGraph(commits));
 
     const list = document.createElement("div");
     list.className = "commits-list";
