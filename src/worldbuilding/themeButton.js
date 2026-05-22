@@ -1,3 +1,5 @@
+import {setBackgroundMusicTheme} from "../utils/backgroundMusic";
+
 const DEFAULT_THEME = "night";
 
 function getSceneTheme() {
@@ -36,6 +38,7 @@ export function setupThemeButton(world) {
         const nextTheme = getNextTheme(getSceneTheme());
         document.documentElement.dataset.sceneTheme = nextTheme;
         refreshWorldColors(world);
+        setBackgroundMusicTheme(nextTheme);
         updateThemeButton(themeButton, nextTheme);
     }
 
