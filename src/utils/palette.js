@@ -42,6 +42,9 @@ export const palette = {
     get grid() {
         return cssColor('--color-grid');
     },
+    get firefly() {
+        return cssColor('--color-firefly');
+    },
     get accent() {
         return cssColor('--color-accent');
     },

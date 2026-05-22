@@ -1,4 +1,5 @@
 import {resetGraph} from "../components/generalCommitsGraph";
+import {pauseBackgroundMusic} from "../utils/backgroundMusic";
 import {closeInfo} from "../utils/infoPanel";
 import {stopTimeline} from "../utils/timeline";
 import {resetWelcome} from "./welcomeAnimation";
@@ -8,10 +9,12 @@ function resetVisualizationState({
     building,
     queue,
     scene,
+    tile,
     userRegistry,
     workers
 }) {
     queue.cancelRun();
+    pauseBackgroundMusic();
     stopTimeline();
     resetGraph();
 
@@ -19,6 +22,7 @@ function resetVisualizationState({
     workers.clear();
     userRegistry.clear();
     building.reset();
+    tile.resetFireflies();
 
     document.getElementById("leaderboard").innerHTML = "";
 
@@ -35,6 +39,7 @@ export function returnToWelcomeMode({
     mode,
     queue,
     scene,
+    tile,
     userRegistry,
     workers
 }) {
@@ -51,6 +56,7 @@ export function returnToWelcomeMode({
         building,
         queue,
         scene,
+        tile,
         userRegistry,
         workers
     });

@@ -62,6 +62,7 @@ function handleHomeClick(event) {
         mode,
         queue,
         scene,
+        tile: world.tile,
         userRegistry,
         workers
     });
@@ -104,6 +105,7 @@ function animate() {
         console.log("error")
     }
 
+    world.tile.update(delta);
 
     renderer.render(scene, camera);
 }
@@ -116,6 +118,7 @@ export async function createWorker(id) {
     await worker.loadModel();
     scene.add(worker);
     activeWorkers.push(worker);
+    world.tile.addFirefly();
 }
 
 export function getWorker(id) {
@@ -127,6 +130,7 @@ export function reviveWorker(id){
     const w = workers.get(id)
     if (!activeWorkers.includes(w)) {
         activeWorkers.push(w);
+        world.tile.addFirefly();
         console.log("pushin")
     }
     scene.add(w)
