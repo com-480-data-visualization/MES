@@ -17,13 +17,15 @@ export function renderLeaderboard(userRegistry, totalCommits = 0, workerApi) {
 
     topUsers.forEach((item, index) => {
 
-        leaderboard.innerHTML += `
-        <section class="ld_player">
+        const section = document.createElement("section");
+        section.className = "ld_player";
+
+        section.innerHTML = `
           <div class="ld_rank">${index + 1}</div>
           <span class="ld_marker" style="background: ${workerApi.getWorker(item.userId).color}"></span>
           <div>
             <div class="ld_bar">
-              <div class="ld_progress" style="width:${item.progress}%" ></div>
+              <div class="ld_progress" style="width:${item.progress}%"></div>
             </div>
             <div class="ld_name">${item.userId}</div>
           </div>
@@ -31,7 +33,12 @@ export function renderLeaderboard(userRegistry, totalCommits = 0, workerApi) {
             ${item.commitCount}
             <small>Commits</small>
           </div>
-        </section>
-      `;
+        `;
+
+        section.addEventListener("click", () => {
+            workerApi.getWorker(item.userId).onClick();
+        });
+
+        leaderboard.appendChild(section);
     });
 }

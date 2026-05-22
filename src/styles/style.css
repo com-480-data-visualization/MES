@@ -587,6 +587,10 @@ canvas {
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
+    cursor: pointer;
+}
+.ld_player * {
+    pointer-events: none;
 }
 
 .ld_rank {
