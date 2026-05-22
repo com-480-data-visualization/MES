@@ -54,6 +54,12 @@ export const palette = {
     get sun() {
         return cssColor('--color-sun');
     },
+    get star() {
+        return cssColor('--color-star');
+    },
+    get starDim() {
+        return cssColor('--color-star-dim');
+    },
     get robotCycle() {
         return cssColorList('--color-robot-cycle');
     },
