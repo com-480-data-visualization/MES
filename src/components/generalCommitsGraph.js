@@ -44,7 +44,7 @@ const line = d3.line()
 
 const path = g.append("path")
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
+    .attr("stroke", "#35f1c2")
     .attr("stroke-width", 2)
     .attr("clip-path", `url(#${clipId})`);
 
