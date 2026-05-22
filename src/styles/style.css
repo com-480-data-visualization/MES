@@ -14,6 +14,11 @@
         #ff69b4, #7fff00, #4682b4, #daa520;
     --welcome-title-outline-color: #ffffff;
     --welcome-title-outline-width: 0.5px;
+
+    --primary: #101224;
+    --secondary: #35f1c2;
+    --secondary-bg: #2d3040;
+    --tertiary: #ffffff;
 }
 
 * {
@@ -141,7 +146,7 @@ canvas {
     height: 56px;
     padding: 0;
     border: 0;
-    color: #00ffcc;
+    color: var(--secondary);
     background: transparent;
     cursor: pointer;
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
@@ -206,7 +211,7 @@ canvas {
 
 .box {
     width: 100%;
-    background: #101224;
+    background: var(--primary);
     color: white;
     padding: 10px;
     border-radius: 8px;
@@ -571,14 +576,14 @@ canvas {
 /* Outer red ring */
 .outer-ring {
     fill: none;
-    stroke: #ff3045;
+    stroke: #ffffff;
     stroke-width: 8;
 }
 
 /* Background ring */
 .progress-bg {
     fill: none;
-    stroke: #2b3040;
+    stroke: var(--secondary-bg);
     stroke-width: 18;
     stroke-linecap: round;
 }
@@ -586,7 +591,7 @@ canvas {
 /* Blue progress ring */
 .progress-ring {
     fill: none;
-    stroke: #2f55ff;
+    stroke: #35f1c2;
     stroke-width: 18;
     stroke-linecap: round;
     transition: stroke-dashoffset 0.4s linear;
@@ -597,5 +602,5 @@ canvas {
     position: absolute;
     font-size: 150%;
     font-weight: bold;
-    color: #2f55ff;
+    color: #35f1c2;
 }
