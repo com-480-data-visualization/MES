@@ -2,11 +2,11 @@
 /* JavaScript scene colors. Update these to customize Three.js objects. */
 :root {
     --color-building: #0055ff;
-    --color-floor: #cccccc;
-    --color-grid: #aaaaaa;
+    --color-floor: #12162a;
+    --color-grid: #343b55;
     --color-accent: #00ffcc;
-    --color-sky: #7393dd;
-    --color-void: #abcae1;
+    --color-sky: #18263d;
+    --color-void: #223a57;
     --color-sun: #ffffff;
     --color-robot-cycle: #ff5500, #00ff55, #5500ff, #ffff00,
         #ff0000, #00ffff, #ff00ff, #0000ff,
@@ -14,6 +14,13 @@
         #ff69b4, #7fff00, #4682b4, #daa520;
     --welcome-title-outline-color: #ffffff;
     --welcome-title-outline-width: 0.5px;
+}
+
+:root[data-scene-theme="day"] {
+    --color-floor: #cccccc;
+    --color-grid: #aaaaaa;
+    --color-sky: #7393dd;
+    --color-void: #abcae1;
 }
 
 * {
@@ -190,6 +197,74 @@ canvas {
 .home-button:focus-visible {
     outline: 3px solid #a7f3d0;
     outline-offset: 3px;
+}
+
+.theme-toggle {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 21;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 50%;
+    color: #a7f3d0;
+    background: rgba(16, 18, 36, 0.9);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+    cursor: pointer;
+    transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.theme-toggle:hover {
+    border-color: rgba(0, 255, 204, 0.72);
+    color: #00ffcc;
+    transform: translateY(-1px) scale(1.04);
+}
+
+.theme-toggle:focus-visible {
+    outline: 3px solid #a7f3d0;
+    outline-offset: 3px;
+}
+
+.theme-toggle-icon {
+    position: relative;
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.theme-toggle-icon::before {
+    content: "";
+    position: absolute;
+}
+
+:root[data-scene-theme="night"] .theme-toggle-icon::before {
+    inset: 1px 3px 2px 2px;
+    border-right: 4px solid currentColor;
+    border-radius: 50%;
+    transform: rotate(-24deg);
+}
+
+:root[data-scene-theme="day"] .theme-toggle-icon::before {
+    top: 6px;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow:
+        0 -9px 0 -5px currentColor,
+        0 9px 0 -5px currentColor,
+        -9px 0 0 -5px currentColor,
+        9px 0 0 -5px currentColor,
+        -7px -7px 0 -5px currentColor,
+        7px -7px 0 -5px currentColor,
+        -7px 7px 0 -5px currentColor,
+        7px 7px 0 -5px currentColor;
 }
 
 #container {

@@ -5,24 +5,22 @@ export class Sky extends THREE.Object3D {
     constructor() {
         super();
 
-        const sky = new THREE.Mesh(
-            new THREE.SphereGeometry(500, 32, 16),
-            new THREE.ShaderMaterial({
-                side: THREE.BackSide,
-                depthWrite: false,
-                uniforms: {
-                    skyColor: { value: new THREE.Color(palette.sky) },
-                    voidColor: { value: new THREE.Color(palette.void) },
-                },
-                vertexShader: `
+        this.skyMaterial = new THREE.ShaderMaterial({
+            side: THREE.BackSide,
+            depthWrite: false,
+            uniforms: {
+                skyColor: { value: new THREE.Color(palette.sky) },
+                voidColor: { value: new THREE.Color(palette.void) },
+            },
+            vertexShader: `
                     varying vec3 vPosition;
 
                     void main() {
                         vPosition = position;
                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                     }
-                `,
-                fragmentShader: `
+            `,
+            fragmentShader: `
                     uniform vec3 skyColor;
                     uniform vec3 voidColor;
                     varying vec3 vPosition;
@@ -32,8 +30,12 @@ export class Sky extends THREE.Object3D {
                         float blend = smoothstep(-0.1, 0.45, height);
                         gl_FragColor = vec4(mix(voidColor, skyColor, blend), 1.0);
                     }
-                `,
-            })
+            `,
+        });
+
+        const sky = new THREE.Mesh(
+            new THREE.SphereGeometry(500, 32, 16),
+            this.skyMaterial
         );
         this.add(sky);
 
@@ -41,5 +43,11 @@ export class Sky extends THREE.Object3D {
         const sun = new THREE.DirectionalLight(palette.sun, 1);
         sun.position.set(100, 100, 100);
         this.add(sun);
+    }
+
+    updateColors() {
+        this.skyMaterial.uniforms.skyColor.value.set(palette.sky);
+        this.skyMaterial.uniforms.voidColor.value.set(palette.void);
+        this.skyMaterial.uniformsNeedUpdate = true;
     }
 }
