@@ -1,3 +1,5 @@
+import {getWorker} from "../main";
+
 function getTopCommitters(userRegistry, totalCommits = 0) {
     return Array.from(userRegistry.entries())
         .map(([userId, commits]) => ({
@@ -8,7 +10,7 @@ function getTopCommitters(userRegistry, totalCommits = 0) {
         .sort((a, b) => b.commitCount - a.commitCount)
 }
 
-export function renderLeaderboard(userRegistry, totalCommits = 0) {
+export function renderLeaderboard(userRegistry, totalCommits = 0, workerApi) {
     const topUsers = getTopCommitters(userRegistry, totalCommits);
     const leaderboard = document.getElementById("leaderboard");
     leaderboard.innerHTML = '';
@@ -18,6 +20,7 @@ export function renderLeaderboard(userRegistry, totalCommits = 0) {
         leaderboard.innerHTML += `
         <section class="ld_player">
           <div class="ld_rank">${index + 1}</div>
+          <span class="ld_marker" style="background: ${workerApi.getWorker(item.userId).color}"></span>
           <div>
             <div class="ld_bar">
               <div class="ld_progress" style="width:${item.progress}%" ></div>

@@ -28,5 +28,5 @@ export function manageCommits(delta,queue,userRegistry, building, workerApi, tot
 
     delay = 0
     consumeCommits(queue, userRegistry, building, workerApi)
-    renderLeaderboard(userRegistry, totalCommits)
+    renderLeaderboard(userRegistry, totalCommits, workerApi)
 }

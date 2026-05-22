@@ -13,6 +13,7 @@ export class Worker extends THREE.Object3D {
         this.t = 0
         this.buildingCenter = this.getBuildingCenter(baseCoordinates)
         this.committerID = committerID;
+        this.color="#FFF"
 
         this.loader = new GLTFLoader();
         this.url = "/MES/models/RobotExpressive.glb"
@@ -55,7 +56,8 @@ export class Worker extends THREE.Object3D {
                     const head = this.model.getObjectByName('Head_3'); // depends on model!
 
                     if (head) {
-                        head.material.color.set(getNextRobotColor()); //make this random with color palette
+                        this.color = getNextRobotColor();
+                        head.material.color.set(this.color); //make this random with color palette
                     }
 
                     this.model.scale.set(1, 1, 1);
