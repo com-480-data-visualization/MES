@@ -57,6 +57,21 @@ export const palette = {
     get sun() {
         return cssColor('--color-sun');
     },
+    get sunsetHorizon() {
+        return cssColor('--color-sunset-horizon');
+    },
+    get sunsetGlow() {
+        return cssColor('--color-sunset-glow');
+    },
+    get sunsetRose() {
+        return cssColor('--color-sunset-rose');
+    },
+    get sunsetViolet() {
+        return cssColor('--color-sunset-violet');
+    },
+    get sunsetCloud() {
+        return cssColor('--color-sunset-cloud');
+    },
     get star() {
         return cssColor('--color-star');
     },

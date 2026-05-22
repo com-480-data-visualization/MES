@@ -2,6 +2,7 @@ Place the background music files here:
 
 ```text
 public/audio/evening.mp3
+public/audio/afternoon.mp3
 public/audio/morning.mp3
 ```
 

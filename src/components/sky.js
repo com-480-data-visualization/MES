@@ -11,6 +11,12 @@ export class Sky extends THREE.Object3D {
             uniforms: {
                 skyColor: { value: new THREE.Color(palette.sky) },
                 voidColor: { value: new THREE.Color(palette.void) },
+                sunsetHorizonColor: { value: new THREE.Color(palette.sunsetHorizon) },
+                sunsetGlowColor: { value: new THREE.Color(palette.sunsetGlow) },
+                sunsetRoseColor: { value: new THREE.Color(palette.sunsetRose) },
+                sunsetVioletColor: { value: new THREE.Color(palette.sunsetViolet) },
+                sunsetCloudColor: { value: new THREE.Color(palette.sunsetCloud) },
+                sunsetStrength: { value: 0 },
             },
             vertexShader: `
                     varying vec3 vPosition;
@@ -23,12 +29,46 @@ export class Sky extends THREE.Object3D {
             fragmentShader: `
                     uniform vec3 skyColor;
                     uniform vec3 voidColor;
+                    uniform vec3 sunsetHorizonColor;
+                    uniform vec3 sunsetGlowColor;
+                    uniform vec3 sunsetRoseColor;
+                    uniform vec3 sunsetVioletColor;
+                    uniform vec3 sunsetCloudColor;
+                    uniform float sunsetStrength;
                     varying vec3 vPosition;
 
+                    float stripeBand(float height, float center, float width) {
+                        return 1.0 - smoothstep(width * 0.35, width, abs(height - center));
+                    }
+
                     void main() {
-                        float height = normalize(vPosition).y;
+                        vec3 direction = normalize(vPosition);
+                        float height = direction.y;
                         float blend = smoothstep(-0.1, 0.45, height);
-                        gl_FragColor = vec4(mix(voidColor, skyColor, blend), 1.0);
+                        vec3 baseColor = mix(voidColor, skyColor, blend);
+
+                        float horizonGlow = 1.0 - smoothstep(0.0, 0.36, abs(height - 0.02));
+                        vec3 sunsetColor = mix(sunsetGlowColor, sunsetHorizonColor, smoothstep(-0.12, 0.1, height));
+                        sunsetColor = mix(sunsetColor, sunsetRoseColor, smoothstep(0.08, 0.34, height));
+                        sunsetColor = mix(sunsetColor, sunsetVioletColor, smoothstep(0.32, 0.76, height));
+                        sunsetColor = mix(sunsetColor, skyColor, smoothstep(0.72, 1.0, height));
+
+                        vec3 sunDirection = normalize(vec3(-0.5, 0.02, -0.86));
+                        float sunDot = max(dot(direction, sunDirection), 0.0);
+                        float sunDisc = smoothstep(0.9992, 1.0, sunDot);
+                        float sunGlow = pow(sunDot, 12.0) * horizonGlow;
+                        sunsetColor = mix(sunsetColor, sunsetGlowColor, min(horizonGlow * 0.34 + sunGlow * 0.55, 0.72));
+                        sunsetColor = mix(sunsetColor, vec3(1.0, 0.8, 0.24), sunDisc);
+
+                        float wispA = sin(direction.x * 18.0 + direction.z * 5.5 + height * 30.0) * 0.5 + 0.5;
+                        float wispB = sin(direction.x * 35.0 - direction.z * 9.0 + height * 14.0) * 0.5 + 0.5;
+                        float cloudTexture = smoothstep(0.58, 0.92, mix(wispA, wispB, 0.35));
+                        float cloudBands = stripeBand(height, 0.16, 0.08) * 0.85 + stripeBand(height, 0.31, 0.1) * 0.48;
+                        float cloudFade = smoothstep(-0.03, 0.08, height) * (1.0 - smoothstep(0.56, 0.86, height));
+                        float cloudMask = cloudTexture * cloudBands * cloudFade;
+                        sunsetColor = mix(sunsetColor, sunsetCloudColor, cloudMask * 0.52);
+
+                        gl_FragColor = vec4(mix(baseColor, sunsetColor, sunsetStrength), 1.0);
                     }
             `,
         });
@@ -43,9 +83,9 @@ export class Sky extends THREE.Object3D {
         this.add(this.stars);
 
         // Create the sun
-        const sun = new THREE.DirectionalLight(palette.sun, 1);
-        sun.position.set(0, 100, 0);
-        this.add(sun);
+        this.sun = new THREE.DirectionalLight(palette.sun, 1);
+        this.sun.position.set(0, 100, 0);
+        this.add(this.sun);
 
         this.updateColors();
     }
@@ -93,17 +133,32 @@ export class Sky extends THREE.Object3D {
         return stars;
     }
 
-    isNightTheme() {
-        return document.documentElement.dataset.sceneTheme !== "day";
+    isEveningTheme() {
+        const theme = document.documentElement.dataset.sceneTheme;
+        return theme === "evening" || theme === "night";
+    }
+
+    isAfternoonTheme() {
+        return document.documentElement.dataset.sceneTheme === "afternoon";
     }
 
     updateColors() {
         this.skyMaterial.uniforms.skyColor.value.set(palette.sky);
         this.skyMaterial.uniforms.voidColor.value.set(palette.void);
+        this.skyMaterial.uniforms.sunsetHorizonColor.value.set(palette.sunsetHorizon);
+        this.skyMaterial.uniforms.sunsetGlowColor.value.set(palette.sunsetGlow);
+        this.skyMaterial.uniforms.sunsetRoseColor.value.set(palette.sunsetRose);
+        this.skyMaterial.uniforms.sunsetVioletColor.value.set(palette.sunsetViolet);
+        this.skyMaterial.uniforms.sunsetCloudColor.value.set(palette.sunsetCloud);
+        this.skyMaterial.uniforms.sunsetStrength.value = this.isAfternoonTheme() ? 1 : 0;
         this.skyMaterial.uniformsNeedUpdate = true;
 
+        if (this.sun) {
+            this.sun.color.set(palette.sun);
+        }
+
         if (this.stars) {
-            this.stars.visible = this.isNightTheme();
+            this.stars.visible = this.isEveningTheme();
         }
     }
 }

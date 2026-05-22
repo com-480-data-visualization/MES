@@ -174,7 +174,8 @@ export class Tile extends THREE.Object3D {
     }
 
     isEveningMode() {
-        return document.documentElement.dataset.sceneTheme !== "day";
+        const theme = document.documentElement.dataset.sceneTheme;
+        return theme === "evening" || theme === "night";
     }
 
     onClick(){

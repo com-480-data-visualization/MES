@@ -9,6 +9,11 @@
     --color-sky: #18263d;
     --color-void: #223a57;
     --color-sun: #ffffff;
+    --color-sunset-horizon: #ffd36a;
+    --color-sunset-glow: #ff6b4a;
+    --color-sunset-rose: #f58ac8;
+    --color-sunset-violet: #5f4bc3;
+    --color-sunset-cloud: #ffd0f0;
     --color-star: #ffffff;
     --color-star-dim: #9dc6ff;
     --color-robot-cycle: #ff5500, #00ff55, #5500ff, #ffff00,
@@ -24,11 +29,25 @@
     --tertiary: #ffffff;
 }
 
+:root[data-scene-theme="morning"],
 :root[data-scene-theme="day"] {
     --color-floor: #cccccc;
     --color-grid: #aaaaaa;
     --color-sky: #7393dd;
     --color-void: #abcae1;
+}
+
+:root[data-scene-theme="afternoon"] {
+    --color-floor: #d8c6a0;
+    --color-grid: #b79367;
+    --color-sky: #403a9f;
+    --color-void: #ffae52;
+    --color-sun: #ffe98a;
+    --color-sunset-horizon: #ffd05f;
+    --color-sunset-glow: #ff5d43;
+    --color-sunset-rose: #ff96d4;
+    --color-sunset-violet: #4b3fa8;
+    --color-sunset-cloud: #ffd7f2;
 }
 
 * {
@@ -250,6 +269,7 @@ canvas {
     position: absolute;
 }
 
+:root[data-scene-theme="evening"] .theme-toggle-icon::before,
 :root[data-scene-theme="night"] .theme-toggle-icon::before {
     inset: 1px 3px 2px 2px;
     border-right: 4px solid currentColor;
@@ -257,6 +277,7 @@ canvas {
     transform: rotate(-24deg);
 }
 
+:root[data-scene-theme="morning"] .theme-toggle-icon::before,
 :root[data-scene-theme="day"] .theme-toggle-icon::before {
     top: 6px;
     left: 6px;
@@ -273,6 +294,16 @@ canvas {
         7px -7px 0 -5px currentColor,
         -7px 7px 0 -5px currentColor,
         7px 7px 0 -5px currentColor;
+}
+
+:root[data-scene-theme="afternoon"] .theme-toggle-icon::before {
+    left: 3px;
+    right: 3px;
+    bottom: 5px;
+    height: 8px;
+    border-radius: 10px 10px 0 0;
+    background: currentColor;
+    box-shadow: 0 7px 0 -3px currentColor;
 }
 
 #container {

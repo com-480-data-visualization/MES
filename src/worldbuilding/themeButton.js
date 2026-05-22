@@ -1,13 +1,21 @@
 import {setBackgroundMusicTheme} from "../utils/backgroundMusic";
 
-const DEFAULT_THEME = "night";
+const DEFAULT_THEME = "evening";
+const THEME_ORDER = ["morning", "afternoon", "evening"];
+
+function normalizeSceneTheme(theme) {
+    if (theme === "day") return "morning";
+    if (theme === "night") return "evening";
+    return THEME_ORDER.includes(theme) ? theme : DEFAULT_THEME;
+}
 
 function getSceneTheme() {
-    return document.documentElement.dataset.sceneTheme === "day" ? "day" : DEFAULT_THEME;
+    return normalizeSceneTheme(document.documentElement.dataset.sceneTheme);
 }
 
 function getNextTheme(theme) {
-    return theme === "night" ? "day" : "night";
+    const index = THEME_ORDER.indexOf(normalizeSceneTheme(theme));
+    return THEME_ORDER[(index + 1) % THEME_ORDER.length];
 }
 
 function refreshWorldColors(world) {

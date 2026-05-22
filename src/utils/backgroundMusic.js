@@ -1,17 +1,24 @@
 const MUSIC_TRACKS = {
-    day: `${import.meta.env.BASE_URL}audio/morning.mp3`,
-    night: `${import.meta.env.BASE_URL}audio/evening.mp3`
+    morning: `${import.meta.env.BASE_URL}audio/morning.mp3`,
+    afternoon: `${import.meta.env.BASE_URL}audio/afternoon.mp3`,
+    evening: `${import.meta.env.BASE_URL}audio/evening.mp3`
 };
 
 let music = null;
 let currentTheme = getSceneTheme();
 
+function normalizeSceneTheme(theme) {
+    if (theme === "day") return "morning";
+    if (theme === "night") return "evening";
+    return MUSIC_TRACKS[theme] ? theme : "evening";
+}
+
 function getSceneTheme() {
-    return document.documentElement.dataset.sceneTheme === "day" ? "day" : "night";
+    return normalizeSceneTheme(document.documentElement.dataset.sceneTheme);
 }
 
 function getTrackForTheme(theme = getSceneTheme()) {
-    return MUSIC_TRACKS[theme] || MUSIC_TRACKS.night;
+    return MUSIC_TRACKS[normalizeSceneTheme(theme)] || MUSIC_TRACKS.evening;
 }
 
 function getBackgroundMusic() {
@@ -39,7 +46,7 @@ export async function startBackgroundMusic() {
 }
 
 export async function setBackgroundMusicTheme(theme) {
-    currentTheme = theme === "day" ? "day" : "night";
+    currentTheme = normalizeSceneTheme(theme);
     const audio = getBackgroundMusic();
     const nextTrack = getTrackForTheme(currentTheme);
     const wasPlaying = !audio.paused;
