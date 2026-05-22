@@ -3,5 +3,7 @@ import {githubtoken} from "../utils/githubtoken";
 
 export function startCommitProducer(owner, repo, queue, lastPage, oldDate, runId) {
     const api = new GitHubCommitAPI(lastPage, oldDate, githubtoken)
-    api.fetchCommitsIntoQueue(owner, repo, queue, {runId});
+    api.fetchCommitsIntoQueue(owner, repo, queue, {runId}).catch((error) => {
+        console.warn("Commit producer stopped before finishing:", error);
+    });
 }

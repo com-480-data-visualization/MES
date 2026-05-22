@@ -28,5 +28,8 @@ export function manageCommits(delta,queue,userRegistry, building, workerApi, tot
 
     delay = 0
     consumeCommits(queue, userRegistry, building, workerApi)
+    if (queue.isDrained()) {
+        building.completeRoof()
+    }
     renderLeaderboard(userRegistry, totalCommits, workerApi)
 }

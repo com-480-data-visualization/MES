@@ -5,6 +5,7 @@ export class AsyncQueue {
         this.baseHour = 0
         this.lock = false
         this.runId = 0
+        this.producerFinished = false
     }
 
     startRun() {
@@ -27,11 +28,21 @@ export class AsyncQueue {
         this.readIndex = 0;
         this.baseHour = 0;
         this.lock = false;
+        this.producerFinished = false;
     }
 
     push(item, runId = this.runId) {
         if (runId !== this.runId) return;
         this.items.push(item);
+    }
+
+    finish(runId = this.runId) {
+        if (runId !== this.runId) return;
+        this.producerFinished = true;
+    }
+
+    isDrained() {
+        return this.producerFinished && this.size() <= 0;
     }
 
     // returns all commits in same hour

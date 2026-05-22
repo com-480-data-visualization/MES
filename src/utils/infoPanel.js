@@ -53,6 +53,14 @@ export function renderInfo(userid){
     restoreCommitListScrollState(scrollState)
 }
 
+export function renderCommitInfo(commit) {
+    const commitId = (commit.committer || commit.commiter || "Unknown").trim().toLowerCase();
+
+    render = false;
+    id = "";
+    updateInfo(renderCommits([commit], commitId));
+}
+
 
 export function updateInfoWorker(userRegistry) {
     userregistry = userRegistry;
@@ -272,7 +280,7 @@ function renderCommits(commits, userid) {
 
         const progress = document.createElement("div");
         progress.className = "ld_progress";
-        progress.style.width = "22%";
+        progress.style.width = "36%";
         bar.appendChild(progress);
 
         const message = document.createElement("div");
@@ -284,6 +292,9 @@ function renderCommits(commits, userid) {
 
         const author = document.createElement("span");
         author.textContent = commit.committer || commit.commiter || "Unknown";
+
+        const blockType = document.createElement("span");
+        blockType.textContent = commit.buildingBlockType === "window" ? "Window commit" : "Block commit";
 
         const commitStat = document.createElement("div");
         commitStat.className = "ld_level commit-stat";
@@ -300,6 +311,7 @@ function renderCommits(commits, userid) {
         commitStat.appendChild(commitSha);
 
         meta.appendChild(author);
+        meta.appendChild(blockType);
         content.appendChild(bar);
         content.appendChild(message);
         content.appendChild(meta);

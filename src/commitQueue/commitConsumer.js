@@ -5,7 +5,7 @@ import {updateCommitChrono} from "../utils/timeline";
 
 export function consumeCommits(queue, userRegistry, building, workerApi) {
 
-    if (queue.size() <= 0) return
+    if (queue.size() <= 0) return 0
     const commits = queue.peekAndAdvance();
 
     for (const commit of commits) {
@@ -27,7 +27,8 @@ export function consumeCommits(queue, userRegistry, building, workerApi) {
         updateCommitChrono(commits.length)
     }
 
-    building.update(commits.length)
+    building.addCommits(commits)
+    return commits.length
 }
 
 

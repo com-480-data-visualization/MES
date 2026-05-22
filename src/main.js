@@ -42,7 +42,7 @@ const raycasterEvent = setUpInputs(camera,renderer)
 const homeButton = document.getElementById("homeButton");
 
 function handleSceneClick(event) {
-    raycasterEvent(event,[...activeWorkers])
+    raycasterEvent(event,[world.building, ...activeWorkers])
 }
 
 async function handleRepoSubmit(event) {

@@ -8,13 +8,24 @@ class GitHubCommitAPI {
         this.oldDate = oldDate;
     }
 
+    getHeaders() {
+        const headers = {
+            Accept: "application/vnd.github+json"
+        };
+
+        if (this.token) {
+            headers.Authorization = `Bearer ${this.token}`;
+        }
+
+        return headers;
+    }
+
     /**
      * Fetch commits from a single page
      */
     async fetchCommit(owner, repo, page, perPage, signal = undefined) {
         const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=${perPage}&page=${page}`;
-        const headers = this.token ? { Authorization: `token ${this.token}` } : {};
-        const res = await fetch(url, { headers, signal });
+        const res = await fetch(url, { headers: this.getHeaders(), signal });
 
         if (!res.ok) {
             throw new Error(`GitHub request failed with ${res.status}: ${res.statusText}`);
@@ -23,6 +34,7 @@ class GitHubCommitAPI {
         const commits = await res.json();
         return commits;
     }
+
     /**
      * Stream commits into an async queue as pages arrive.
      */
@@ -30,15 +42,26 @@ class GitHubCommitAPI {
         const perPage = options.perPage ?? 100;
         const runId = options.runId ?? queue.runId;
         let page = this.lastPage;
+        let completed = false;
 
+        try {
+            while (page > 0 && queue.isRunActive(runId)) {
+                const commits = await this.fetchCommit(owner, repo, page, perPage);
+                if (!queue.isRunActive(runId)) break;
+                if (commits.length === 0) break;
 
-        while (page > 0 && queue.isRunActive(runId)) {
-            const commits = await this.fetchCommit(owner, repo, page, perPage);
-            if (!queue.isRunActive(runId)) break;
-            if (commits.length === 0) break;
+                commits
+                    .slice()
+                    .reverse()
+                    .forEach((commit) => queue.push(this.getCommitSummary(commit), runId));
+                page--;
+            }
 
-            commits.reverse().forEach((commit) => queue.push(this.getCommitSummary(commit), runId));
-            page--;
+            completed = queue.isRunActive(runId);
+        } finally {
+            if (completed) {
+                queue.finish(runId);
+            }
         }
 
     }
