@@ -5,6 +5,7 @@ import {renderInfo} from "../utils/infoPanel";
 import { getNextRobotColor } from "../utils/palette.js";
 
 const speed = 0.15
+let selectedWorker = null;
 
 export class Worker extends THREE.Object3D {
     constructor(baseCoordinates, committerID = "Unknown") {
@@ -14,6 +15,8 @@ export class Worker extends THREE.Object3D {
         this.buildingCenter = this.getBuildingCenter(baseCoordinates)
         this.committerID = committerID;
         this.color="#FFF"
+        this.aura = null;
+        this.auraTime = 0;
 
         this.loader = new GLTFLoader();
         this.url = "/MES/models/RobotExpressive.glb"
@@ -63,6 +66,8 @@ export class Worker extends THREE.Object3D {
                     this.model.scale.set(1, 1, 1);
 
                     this.add(this.model);
+                    this.aura = this.createAura();
+                    this.add(this.aura);
 
                     const mixer = new THREE.AnimationMixer(this.model);
                     const clip = gltf.animations[10]; // pick an animation normal 6
@@ -81,6 +86,8 @@ export class Worker extends THREE.Object3D {
     }
 
     update(delta) {
+        this.updateAura(delta);
+
         switch (this.mode) {
             case 0:
                 this.goWork(delta)
@@ -98,6 +105,81 @@ export class Worker extends THREE.Object3D {
                 return;
 
         }
+    }
+
+    createAura() {
+        const aura = new THREE.Group();
+        const color = new THREE.Color(this.color);
+
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.14,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const glow = new THREE.Mesh(new THREE.SphereGeometry(1.4, 32, 16), glowMaterial);
+        glow.position.y = 1.05;
+        glow.userData.baseOpacity = glowMaterial.opacity;
+        glow.userData.baseScale = 1;
+        aura.add(glow);
+
+        const ringMaterial = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.72,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.035, 12, 96), ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.08;
+        ring.userData.baseOpacity = ringMaterial.opacity;
+        ring.userData.baseScale = 1;
+        aura.add(ring);
+
+        const waveMaterial = ringMaterial.clone();
+        waveMaterial.opacity = 0.42;
+        const wave = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.025, 12, 96), waveMaterial);
+        wave.rotation.x = Math.PI / 2;
+        wave.position.y = 0.1;
+        wave.userData.baseOpacity = waveMaterial.opacity;
+        wave.userData.baseScale = 1.25;
+        aura.add(wave);
+
+        aura.visible = false;
+        return aura;
+    }
+
+    showAura() {
+        if (!this.aura) return;
+
+        this.aura.visible = true;
+        this.auraTime = 0;
+    }
+
+    hideAura() {
+        if (!this.aura) return;
+
+        this.aura.visible = false;
+    }
+
+    updateAura(delta) {
+        if (!this.aura?.visible) return;
+
+        this.auraTime += delta;
+        const pulse = (Math.sin(this.auraTime * 5) + 1) / 2;
+        const wavePulse = (this.auraTime * 0.75) % 1;
+
+        const [glow, ring, wave] = this.aura.children;
+        glow.scale.setScalar(1 + pulse * 0.14);
+        glow.material.opacity = glow.userData.baseOpacity * (0.7 + pulse * 0.45);
+
+        ring.scale.setScalar(1 + pulse * 0.08);
+        ring.material.opacity = ring.userData.baseOpacity * (0.72 + pulse * 0.28);
+
+        wave.scale.setScalar(wave.userData.baseScale + wavePulse * 0.75);
+        wave.material.opacity = wave.userData.baseOpacity * (1 - wavePulse);
     }
 
     work(delta){
@@ -163,6 +245,12 @@ export class Worker extends THREE.Object3D {
     }
 
     onClick(){
+        if (selectedWorker && selectedWorker !== this) {
+            selectedWorker.hideAura();
+        }
+
+        selectedWorker = this;
+        this.showAura();
         renderInfo(this.committerID)
     }
 
