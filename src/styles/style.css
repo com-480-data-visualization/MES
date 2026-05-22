@@ -197,7 +197,7 @@ canvas {
     top: 20px;
     right: 20px;
     z-index: 10;
-    width: min(540px, calc(100vw - 40px));
+    width: 30vw;
 
     display: flex;
     flex-direction: column;
