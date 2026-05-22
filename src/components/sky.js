@@ -82,7 +82,13 @@ export class Sky extends THREE.Object3D {
         this.stars = this.createStars();
         this.add(this.stars);
 
-        // Create the sun
+        this.sunSprite = this.createSunSprite();
+        this.add(this.sunSprite);
+
+        this.moonSprite = this.createMoonSprite();
+        this.add(this.moonSprite);
+
+        // Directional light for the scene.
         this.sun = new THREE.DirectionalLight(palette.sun, 1);
         this.sun.position.set(0, 100, 0);
         this.add(this.sun);
@@ -133,6 +139,98 @@ export class Sky extends THREE.Object3D {
         return stars;
     }
 
+    createSunTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+
+        const context = canvas.getContext('2d');
+        const glow = context.createRadialGradient(64, 64, 8, 64, 64, 63);
+        glow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        glow.addColorStop(0.36, 'rgba(255, 255, 255, 0.95)');
+        glow.addColorStop(0.58, 'rgba(255, 255, 255, 0.28)');
+        glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        context.fillStyle = glow;
+        context.fillRect(0, 0, 128, 128);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        return texture;
+    }
+
+    createMoonTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+
+        const context = canvas.getContext('2d');
+        const glow = context.createRadialGradient(64, 64, 18, 64, 64, 60);
+        glow.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+        glow.addColorStop(0.7, 'rgba(255, 255, 255, 0.1)');
+        glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        context.fillStyle = glow;
+        context.fillRect(0, 0, 128, 128);
+
+        context.beginPath();
+        context.arc(58, 60, 28, 0, Math.PI * 2);
+        context.fillStyle = 'rgba(255, 255, 255, 0.98)';
+        context.fill();
+
+        context.globalCompositeOperation = 'destination-out';
+        context.beginPath();
+        context.arc(70, 54, 27, 0, Math.PI * 2);
+        context.fill();
+        context.globalCompositeOperation = 'source-over';
+
+        context.beginPath();
+        context.arc(47, 50, 3, 0, Math.PI * 2);
+        context.arc(54, 76, 2, 0, Math.PI * 2);
+        context.arc(39, 66, 2.5, 0, Math.PI * 2);
+        context.fillStyle = 'rgba(190, 210, 235, 0.32)';
+        context.fill();
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        return texture;
+    }
+
+    createSunSprite() {
+        const material = new THREE.SpriteMaterial({
+            map: this.createSunTexture(),
+            color: palette.sun,
+            transparent: true,
+            opacity: 0.94,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+        });
+        const sprite = new THREE.Sprite(material);
+        sprite.position.set(-250, 115, -310);
+        sprite.scale.set(54, 54, 1);
+        sprite.renderOrder = 2;
+        return sprite;
+    }
+
+    createMoonSprite() {
+        const material = new THREE.SpriteMaterial({
+            map: this.createMoonTexture(),
+            color: palette.moon,
+            transparent: true,
+            opacity: 0.92,
+            depthWrite: false,
+        });
+        const sprite = new THREE.Sprite(material);
+        sprite.position.set(-140, 125, -360);
+        sprite.scale.set(46, 46, 1);
+        sprite.renderOrder = 2;
+        return sprite;
+    }
+
+    isMorningTheme() {
+        const theme = document.documentElement.dataset.sceneTheme;
+        return theme === "morning" || theme === "day";
+    }
+
     isEveningTheme() {
         const theme = document.documentElement.dataset.sceneTheme;
         return theme === "evening" || theme === "night";
@@ -155,6 +253,16 @@ export class Sky extends THREE.Object3D {
 
         if (this.sun) {
             this.sun.color.set(palette.sun);
+        }
+
+        if (this.sunSprite) {
+            this.sunSprite.visible = this.isMorningTheme();
+            this.sunSprite.material.color.set(palette.sun);
+        }
+
+        if (this.moonSprite) {
+            this.moonSprite.visible = this.isEveningTheme();
+            this.moonSprite.material.color.set(palette.moon);
         }
 
         if (this.stars) {

@@ -57,6 +57,9 @@ export const palette = {
     get sun() {
         return cssColor('--color-sun');
     },
+    get moon() {
+        return cssColor('--color-moon');
+    },
     get sunsetHorizon() {
         return cssColor('--color-sunset-horizon');
     },

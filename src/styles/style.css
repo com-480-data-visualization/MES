@@ -9,6 +9,7 @@
     --color-sky: #18263d;
     --color-void: #223a57;
     --color-sun: #ffffff;
+    --color-moon: #e9f3ff;
     --color-sunset-horizon: #ffd36a;
     --color-sunset-glow: #ff6b4a;
     --color-sunset-rose: #f58ac8;
@@ -35,6 +36,7 @@
     --color-grid: #aaaaaa;
     --color-sky: #7393dd;
     --color-void: #abcae1;
+    --color-sun: #fff2a6;
 }
 
 :root[data-scene-theme="afternoon"] {
