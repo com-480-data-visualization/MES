@@ -39,7 +39,7 @@ export class Sky extends THREE.Object3D {
 
         // Create the sun
         const sun = new THREE.DirectionalLight(palette.sun, 1);
-        sun.position.set(100, 100, 100);
+        sun.position.set(0, 100, 0);
         this.add(sun);
     }
 }
