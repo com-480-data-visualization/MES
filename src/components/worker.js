@@ -7,6 +7,13 @@ import { getNextRobotColor } from "../utils/palette.js";
 const speed = 0.15
 let selectedWorker = null;
 
+export function clearSelectedWorkerAura() {
+    if (!selectedWorker) return;
+
+    selectedWorker.hideAura();
+    selectedWorker = null;
+}
+
 export class Worker extends THREE.Object3D {
     constructor(baseCoordinates, committerID = "Unknown") {
         super();

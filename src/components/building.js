@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {renderCommitInfo, updateInfo} from "../utils/infoPanel";
+import {clearSelectedWorkerAura} from "./worker";
 import { palette } from "../utils/palette.js";
 
 export class Building extends THREE.Object3D {
@@ -245,7 +246,10 @@ export class Building extends THREE.Object3D {
         commit.buildingDateKey = this.getCommitDateKey(commit);
         block.userData.commit = commit;
         group.userData.commit = commit;
-        group.onClick = () => renderCommitInfo(commit);
+        group.onClick = () => {
+            clearSelectedWorkerAura();
+            renderCommitInfo(commit);
+        };
 
         this.commitBlockGroup.add(group);
         this.commitCount++;
