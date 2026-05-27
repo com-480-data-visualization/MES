@@ -15,6 +15,7 @@ export class Building extends THREE.Object3D {
             blockWidth: 1.35,
             blockHeight: 0.72,
             blockDepth: 0.84,
+            blockGap: 0.06,
             wallWidth: 7,
             wallDepth: 6,
             rowHeight: 0.82
@@ -52,11 +53,12 @@ export class Building extends THREE.Object3D {
     }
 
     createFoundation() {
-        const {blockWidth, blockDepth, wallWidth, wallDepth} = this.wallConfig;
+        const {blockWidth, blockDepth} = this.wallConfig;
+        const {xStart, xEnd, zStart, zEnd} = this.getFootprintMetrics();
         const foundationGeometry = new THREE.BoxGeometry(
-            wallWidth * blockWidth + 1.5,
+            xEnd - xStart + blockWidth + 1.5,
             0.25,
-            wallDepth * blockDepth + 1.2
+            zEnd - zStart + blockDepth + 1.2
         );
 
         this.foundation = new THREE.Mesh(foundationGeometry, this.materials.foundation);
@@ -67,16 +69,16 @@ export class Building extends THREE.Object3D {
     }
 
     createBaseCoordinates() {
-        const {blockWidth, blockDepth, wallWidth, wallDepth} = this.wallConfig;
-        const xStart = -((wallWidth - 1) * blockWidth) / 2;
-        const zStart = -((wallDepth - 1) * blockDepth) / 2;
+        const {wallWidth, wallDepth} = this.wallConfig;
+        const {xStart, zStart, xStep, zEnd} = this.getFootprintMetrics();
+        const zStep = wallDepth > 1 ? (zEnd - zStart) / (wallDepth - 1) : 0;
         const coordinates = [];
 
         for (let xIndex = 0; xIndex < wallWidth; xIndex++) {
             for (let zIndex = 0; zIndex < wallDepth; zIndex++) {
                 coordinates.push({
-                    x: xStart + xIndex * blockWidth,
-                    y: zStart + zIndex * blockDepth
+                    x: xStart + xIndex * xStep,
+                    y: zStart + zIndex * zStep
                 });
             }
         }
@@ -96,20 +98,40 @@ export class Building extends THREE.Object3D {
         return wallWidth * 2 + Math.max(0, wallDepth - 2) * 2;
     }
 
+    getFootprintMetrics() {
+        const {blockWidth, blockDepth, blockGap, wallWidth, wallDepth} = this.wallConfig;
+        const sideSlots = Math.max(0, wallDepth - 2);
+        const xStep = blockWidth + blockGap;
+        const sideStep = blockWidth + blockGap;
+        const cornerClearance = (blockDepth + blockWidth) / 2 + blockGap;
+        const halfWidth = ((wallWidth - 1) * xStep) / 2;
+        const halfDepth = sideSlots > 0
+            ? (cornerClearance * 2 + (sideSlots - 1) * sideStep) / 2
+            : blockDepth / 2;
+
+        return {
+            xStart: -halfWidth,
+            xEnd: halfWidth,
+            zStart: -halfDepth,
+            zEnd: halfDepth,
+            xStep,
+            sideStep,
+            sideSlots,
+            cornerClearance
+        };
+    }
+
     getCommitSlot(index) {
-        const {blockWidth, blockDepth, wallWidth, wallDepth} = this.wallConfig;
+        const {wallWidth} = this.wallConfig;
+        const {xStart, xEnd, zStart, zEnd, xStep, sideStep, sideSlots, cornerClearance} = this.getFootprintMetrics();
         const slotsPerRow = this.getSlotsPerRow();
         const row = Math.floor(index / slotsPerRow);
         let slotIndex = index % slotsPerRow;
-        const xStart = -((wallWidth - 1) * blockWidth) / 2;
-        const zStart = -((wallDepth - 1) * blockDepth) / 2;
-        const zEnd = -zStart;
-        const sideSlots = Math.max(0, wallDepth - 2);
 
         if (slotIndex < wallWidth) {
             return {
                 row,
-                x: xStart + slotIndex * blockWidth,
+                x: xStart + slotIndex * xStep,
                 z: zEnd,
                 rotationY: 0,
                 normal: new THREE.Vector3(0, 0, 1)
@@ -121,8 +143,8 @@ export class Building extends THREE.Object3D {
         if (slotIndex < sideSlots) {
             return {
                 row,
-                x: -xStart,
-                z: zEnd - (slotIndex + 1) * blockDepth,
+                x: xEnd,
+                z: zEnd - cornerClearance - slotIndex * sideStep,
                 rotationY: Math.PI / 2,
                 normal: new THREE.Vector3(1, 0, 0)
             };
@@ -133,7 +155,7 @@ export class Building extends THREE.Object3D {
         if (slotIndex < wallWidth) {
             return {
                 row,
-                x: -xStart - slotIndex * blockWidth,
+                x: xEnd - slotIndex * xStep,
                 z: zStart,
                 rotationY: 0,
                 normal: new THREE.Vector3(0, 0, -1)
@@ -145,7 +167,7 @@ export class Building extends THREE.Object3D {
         return {
             row,
             x: xStart,
-            z: zStart + (slotIndex + 1) * blockDepth,
+            z: zStart + cornerClearance + slotIndex * sideStep,
             rotationY: Math.PI / 2,
             normal: new THREE.Vector3(-1, 0, 0)
         };
@@ -261,9 +283,10 @@ export class Building extends THREE.Object3D {
     }
 
     createFinalRoof(baseY) {
-        const {blockWidth, blockDepth, wallWidth, wallDepth} = this.wallConfig;
-        const roofWidth = wallWidth * blockWidth + 2.1;
-        const roofDepth = wallDepth * blockDepth + 1.4;
+        const {blockWidth, blockDepth} = this.wallConfig;
+        const {xStart, xEnd, zStart, zEnd} = this.getFootprintMetrics();
+        const roofWidth = xEnd - xStart + blockWidth + 2.1;
+        const roofDepth = zEnd - zStart + blockDepth + 1.4;
         const roofAngle = Math.PI / 7;
         const roofPanelDepth = roofDepth / 2 + 0.55;
         const roofZ = roofPanelDepth * 0.26;
@@ -290,8 +313,8 @@ export class Building extends THREE.Object3D {
         ridge.castShadow = true;
         this.roofGroup.add(ridge);
 
-        this.addRoofGable(-(wallDepth - 1) * blockDepth / 2 - 0.48, baseY, roofWidth);
-        this.addRoofGable((wallDepth - 1) * blockDepth / 2 + 0.48, baseY, roofWidth);
+        this.addRoofGable(zStart - blockDepth / 2 - 0.48, baseY, roofWidth);
+        this.addRoofGable(zEnd + blockDepth / 2 + 0.48, baseY, roofWidth);
 
         const chimney = new THREE.Mesh(
             new THREE.BoxGeometry(0.62, 1.18, 0.54),
