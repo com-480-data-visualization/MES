@@ -54,11 +54,9 @@ export function renderInfo(userid){
 }
 
 export function renderCommitInfo(commit) {
-    const commitId = (commit.committer || commit.commiter || "Unknown").trim().toLowerCase();
-
     render = false;
     id = "";
-    updateInfo(renderCommits([commit], commitId));
+    updateInfo(renderSingleCommit(commit));
 }
 
 
@@ -262,66 +260,92 @@ function renderCommits(commits, userid) {
     list.className = "commits-list";
 
     commits.forEach((commit, index) => {
-        const item = document.createElement("section");
-        item.className = "ld_player commit";
-
-        const rank = document.createElement("div");
-        rank.className = "ld_rank commit-rank";
-        rank.textContent = index + 1;
-
-        const marker = document.createElement("span");
-        marker.className = "ld_marker commit-marker";
-
-        const content = document.createElement("div");
-        content.className = "commit-content";
-
-        const bar = document.createElement("div");
-        bar.className = "ld_bar";
-
-        const progress = document.createElement("div");
-        progress.className = "ld_progress";
-        progress.style.width = "36%";
-        bar.appendChild(progress);
-
-        const message = document.createElement("div");
-        message.className = "ld_name commit-message";
-        message.textContent = commit.message;
-
-        const meta = document.createElement("div");
-        meta.className = "commit-meta";
-
-        const author = document.createElement("span");
-        author.textContent = commit.committer || commit.commiter || "Unknown";
-
-        const blockType = document.createElement("span");
-        blockType.textContent = commit.buildingBlockType === "window" ? "Window commit" : "Block commit";
-
-        const commitStat = document.createElement("div");
-        commitStat.className = "ld_level commit-stat";
-
-        const commitDate = document.createElement("span");
-        commitDate.textContent = commit.date
-            ? new Date(commit.date).toLocaleDateString(undefined, {month: "short", day: "numeric"})
-            : "No date";
-
-        const commitSha = document.createElement("small");
-        commitSha.textContent = commit.sha ? commit.sha.slice(0, 7) : "pending";
-
-        commitStat.appendChild(commitDate);
-        commitStat.appendChild(commitSha);
-
-        meta.appendChild(author);
-        meta.appendChild(blockType);
-        content.appendChild(bar);
-        content.appendChild(message);
-        content.appendChild(meta);
-        item.appendChild(rank);
-        item.appendChild(marker);
-        item.appendChild(content);
-        item.appendChild(commitStat);
-        list.appendChild(item);
+        list.appendChild(renderCommitRow(commit, index));
     });
 
     container.appendChild(list);
     return container;
+}
+
+function renderSingleCommit(commit) {
+    const container = document.createElement("div");
+    container.className = "commits-container single-commit-container";
+
+    const header = document.createElement("div");
+    header.className = "commits-header single-commit-header";
+
+    const title = document.createElement("h3");
+    title.textContent = commit.committer || commit.commiter || "Unknown";
+
+    header.appendChild(title);
+    container.appendChild(header);
+
+    const list = document.createElement("div");
+    list.className = "commits-list single-commit-list";
+    list.appendChild(renderCommitRow(commit, 0));
+
+    container.appendChild(list);
+    return container;
+}
+
+function renderCommitRow(commit, index) {
+    const item = document.createElement("section");
+    item.className = "ld_player commit";
+
+    const rank = document.createElement("div");
+    rank.className = "ld_rank commit-rank";
+    rank.textContent = index + 1;
+
+    const marker = document.createElement("span");
+    marker.className = "ld_marker commit-marker";
+
+    const content = document.createElement("div");
+    content.className = "commit-content";
+
+    const bar = document.createElement("div");
+    bar.className = "ld_bar";
+
+    const progress = document.createElement("div");
+    progress.className = "ld_progress";
+    progress.style.width = "36%";
+    bar.appendChild(progress);
+
+    const message = document.createElement("div");
+    message.className = "ld_name commit-message";
+    message.textContent = commit.message;
+
+    const meta = document.createElement("div");
+    meta.className = "commit-meta";
+
+    const author = document.createElement("span");
+    author.textContent = commit.committer || commit.commiter || "Unknown";
+
+    const blockType = document.createElement("span");
+    blockType.textContent = commit.buildingBlockType === "window" ? "Window commit" : "Block commit";
+
+    const commitStat = document.createElement("div");
+    commitStat.className = "ld_level commit-stat";
+
+    const commitDate = document.createElement("span");
+    commitDate.textContent = commit.date
+        ? new Date(commit.date).toLocaleDateString(undefined, {month: "short", day: "numeric"})
+        : "No date";
+
+    const commitSha = document.createElement("small");
+    commitSha.textContent = commit.sha ? commit.sha.slice(0, 7) : "pending";
+
+    commitStat.appendChild(commitDate);
+    commitStat.appendChild(commitSha);
+
+    meta.appendChild(author);
+    meta.appendChild(blockType);
+    content.appendChild(bar);
+    content.appendChild(message);
+    content.appendChild(meta);
+    item.appendChild(rank);
+    item.appendChild(marker);
+    item.appendChild(content);
+    item.appendChild(commitStat);
+
+    return item;
 }

@@ -612,6 +612,21 @@ canvas {
     scrollbar-color: #25e9bd #101224;
 }
 
+.single-commit-container {
+    max-height: none;
+}
+
+.single-commit-header {
+    min-height: 46px;
+    padding-bottom: 6px;
+}
+
+.single-commit-list {
+    max-height: none;
+    padding-top: 2px;
+    overflow: visible;
+}
+
 .commit {
     display: grid;
     grid-template-columns: 18px 10px minmax(0, 1fr) minmax(58px, auto);
