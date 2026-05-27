@@ -108,7 +108,6 @@ function renderGraph(commits, userid) {
     const height = 100 - margin.top - margin.bottom;
     const windowSize = 1000 * 60 * 60 * 24 * 5;
 
-    //test data
     const svg = d3.select(container)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
