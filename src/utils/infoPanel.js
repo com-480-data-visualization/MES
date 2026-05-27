@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 
+export const INFO_PANEL_CLOSED_EVENT = "mes:info-panel-closed";
+
 export function updateInfo(info){
     const container = document.getElementById('user-container');
 
@@ -23,6 +25,8 @@ export function closeInfo(event){
 
     render = false
     id = ""
+
+    window.dispatchEvent(new CustomEvent(INFO_PANEL_CLOSED_EVENT));
 }
 
 function renderCloseButton(){

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {generatePath} from "../utils/pathGenerator";
-import {renderInfo} from "../utils/infoPanel";
+import {INFO_PANEL_CLOSED_EVENT, renderInfo} from "../utils/infoPanel";
 import { getNextRobotColor } from "../utils/palette.js";
 
 const speed = 0.15
@@ -13,6 +13,8 @@ export function clearSelectedWorkerAura() {
     selectedWorker.hideAura();
     selectedWorker = null;
 }
+
+window.addEventListener(INFO_PANEL_CLOSED_EVENT, clearSelectedWorkerAura);
 
 export class Worker extends THREE.Object3D {
     constructor(baseCoordinates, committerID = "Unknown") {
