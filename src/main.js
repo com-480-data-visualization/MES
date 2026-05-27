@@ -40,6 +40,7 @@ const workerApi = {
 
 const raycasterEvent = setUpInputs(camera,renderer)
 const homeButton = document.getElementById("homeButton");
+const repoLabel = document.getElementById("repoLabel");
 
 function handleSceneClick(event) {
     raycasterEvent(event,[world.building, ...activeWorkers])
@@ -50,6 +51,9 @@ async function handleRepoSubmit(event) {
     startBackgroundMusic();
     infoRepo = await setUpCommitPipeline(event.target.repoUrl.value, queue)
     if (infoRepo === false) return;
+    if (repoLabel) {
+        repoLabel.textContent = `Repository selected: ${infoRepo.repo}`;
+    }
     world.building.setDuration(infoRepo.totalCommits)
     mode = "transition"
 }
@@ -72,6 +76,10 @@ function handleHomeClick(event) {
     activeWorkers = nextState.activeWorkers;
     mode = nextState.mode;
     ongoing = nextState.ongoing;
+
+    if (repoLabel) {
+        repoLabel.textContent = "Repository selected";
+    }
 }
 
 window.addEventListener('click', handleSceneClick, false);

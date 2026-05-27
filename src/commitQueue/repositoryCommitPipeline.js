@@ -12,7 +12,11 @@ export async function setUpCommitPipeline(repoUrl, queue) {
         const info = await getInfoRepo(owner, repo);
         if (!queue.isRunActive(runId)) return false;
         startCommitProducer(owner, repo, queue, info.lastPage, info.oldestDate, runId);
-        return info
+        return {
+            ...info,
+            owner,
+            repo
+        }
     } catch (e) {
         return false;
     }
