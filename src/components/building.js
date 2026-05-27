@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {renderCommitInfo, updateInfo} from "../utils/infoPanel";
+import {renderCommitInfo} from "../utils/infoPanel";
 import {clearSelectedWorkerAura} from "./worker";
 import { palette } from "../utils/palette.js";
 
@@ -416,6 +416,6 @@ export class Building extends THREE.Object3D {
     }
 
     onClick() {
-        updateInfo("Each block or window represents one commit. Block colors group commits by date.");
+        return;
     }
 }
