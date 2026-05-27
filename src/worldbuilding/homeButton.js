@@ -1,5 +1,5 @@
 import {resetGraph} from "../components/generalCommitsGraph";
-import {pauseBackgroundMusic} from "../utils/backgroundMusic";
+import {stopBackgroundMusic} from "../utils/backgroundMusic";
 import {closeInfo} from "../utils/infoPanel";
 import {stopTimeline} from "../utils/timeline";
 import {resetWelcome} from "./welcomeAnimation";
@@ -14,7 +14,7 @@ function resetVisualizationState({
     workers
 }) {
     queue.cancelRun();
-    pauseBackgroundMusic();
+    stopBackgroundMusic();
     stopTimeline();
     resetGraph();
 

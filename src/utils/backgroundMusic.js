@@ -105,6 +105,18 @@ export function pauseBackgroundMusic() {
     music.pause();
 }
 
+export function stopBackgroundMusic() {
+    if (!music) return;
+
+    music.pause();
+
+    try {
+        music.currentTime = 0;
+    } catch (error) {
+        console.warn("Background music could not be reset:", error);
+    }
+}
+
 export function setBackgroundMusicVolume(volume) {
     currentVolume = clampVolume(volume);
     storeVolume(currentVolume);
