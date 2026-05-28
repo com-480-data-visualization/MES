@@ -413,6 +413,48 @@ canvas {
     outline-offset: 2px;
 }
 
+.settings-speed-field {
+    grid-template-columns: 1fr;
+}
+
+.settings-speed-options {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.settings-speed-options button {
+    min-width: 0;
+    padding: 8px 0;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.84);
+    background: rgba(255, 255, 255, 0.08);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.settings-speed-options button:hover,
+.settings-speed-options button:focus-visible {
+    border-color: var(--secondary);
+    color: #ffffff;
+}
+
+.settings-speed-options button:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+}
+
+.settings-speed-options button.is-active,
+.settings-speed-options button[aria-pressed="true"] {
+    border-color: var(--secondary);
+    color: var(--primary);
+    background: var(--secondary);
+}
+
 #container {
     position: fixed;
     --panel-gutter: clamp(8px, 2vw, 20px);

@@ -47,6 +47,15 @@
             <span id="musicVolumeValue" class="settings-value">25%</span>
             <input id="musicVolume" type="range" min="0" max="100" step="1" value="25">
         </label>
+        <div class="settings-field settings-speed-field" role="group" aria-labelledby="animationSpeedLabel">
+            <span id="animationSpeedLabel">Animation speed</span>
+            <div class="settings-speed-options">
+                <button type="button" data-speed-multiplier="1" aria-pressed="true">x1</button>
+                <button type="button" data-speed-multiplier="2" aria-pressed="false">x2</button>
+                <button type="button" data-speed-multiplier="4" aria-pressed="false">x4</button>
+                <button type="button" data-speed-multiplier="16" aria-pressed="false">x16</button>
+            </div>
+        </div>
         <label class="settings-field" for="githubTokenInput">
             <span>GitHub token</span>
             <input

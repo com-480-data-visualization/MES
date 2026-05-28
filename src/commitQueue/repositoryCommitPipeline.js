@@ -24,14 +24,32 @@ export async function setUpCommitPipeline(repoUrl, queue) {
 }
 
 
+const speed = 0.25
+export const COMMIT_ANIMATION_SPEEDS = [1, 2, 4, 16];
+
 let delay = 0
-let speed = 0.25
+let commitAnimationSpeed = 1
+
+export function setCommitAnimationSpeed(multiplier) {
+    const nextSpeed = Number(multiplier);
+    commitAnimationSpeed = COMMIT_ANIMATION_SPEEDS.includes(nextSpeed) ? nextSpeed : 1;
+    return commitAnimationSpeed;
+}
+
+export function getCommitAnimationSpeed() {
+    return commitAnimationSpeed;
+}
+
 export function manageCommits(delta,queue,userRegistry, building, workerApi, totalCommits = 0){
     delay += delta;
     if (delay < speed) return
 
     delay = 0
-    consumeCommits(queue, userRegistry, building, workerApi)
+    for (let i = 0; i < commitAnimationSpeed; i++) {
+        if (queue.size() <= 0) break;
+        consumeCommits(queue, userRegistry, building, workerApi)
+    }
+
     if (queue.isDrained()) {
         building.completeRoof()
     }
