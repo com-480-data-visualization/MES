@@ -248,7 +248,7 @@ export class Sky extends THREE.Object3D {
         this.skyMaterial.uniforms.sunsetRoseColor.value.set(palette.sunsetRose);
         this.skyMaterial.uniforms.sunsetVioletColor.value.set(palette.sunsetViolet);
         this.skyMaterial.uniforms.sunsetCloudColor.value.set(palette.sunsetCloud);
-        this.skyMaterial.uniforms.sunsetStrength.value = this.isAfternoonTheme() ? 1 : 0;
+        this.skyMaterial.uniforms.sunsetStrength.value = this.isAfternoonTheme() ? 0.68 : 0;
         this.skyMaterial.uniformsNeedUpdate = true;
 
         if (this.sun) {

@@ -42,14 +42,14 @@
 :root[data-scene-theme="afternoon"] {
     --color-floor: #d8c6a0;
     --color-grid: #b79367;
-    --color-sky: #403a9f;
-    --color-void: #ffae52;
-    --color-sun: #ffe98a;
-    --color-sunset-horizon: #ffd05f;
-    --color-sunset-glow: #ff5d43;
-    --color-sunset-rose: #ff96d4;
-    --color-sunset-violet: #4b3fa8;
-    --color-sunset-cloud: #ffd7f2;
+    --color-sky: #222f5b;
+    --color-void: #2d4368;
+    --color-sun: #f4d985;
+    --color-sunset-horizon: #dcae75;
+    --color-sunset-glow: #97708c;
+    --color-sunset-rose: #8a74b4;
+    --color-sunset-violet: #28346a;
+    --color-sunset-cloud: #c6b8dc;
 }
 
 * {
