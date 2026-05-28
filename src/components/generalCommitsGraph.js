@@ -3,13 +3,15 @@ import * as d3 from "d3";
 const svg = d3.select("#general-graph");
 
 const margin = { top: 10, right: 10, bottom: 30, left: 40 };
-const max_width = window.innerWidth * 0.28; // 30vw in px
-const width = max_width - margin.left - margin.right;
+const svgWidth = Math.min(Math.max(window.innerWidth * 0.34, 300), 510);
+const width = svgWidth - margin.left - margin.right;
 const height = 100 - margin.top - margin.bottom;
+const svgHeight = height + margin.top + margin.bottom;
 
 const g = svg
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 

@@ -23,7 +23,7 @@ export function renderLeaderboard(userRegistry, totalCommits = 0, workerApi) {
         section.innerHTML = `
           <div class="ld_rank">${index + 1}</div>
           <span class="ld_marker" style="background: ${workerApi.getWorker(item.userId).color}"></span>
-          <div>
+          <div class="ld_body">
             <div class="ld_bar">
               <div class="ld_progress" style="width:${item.progress}%"></div>
             </div>

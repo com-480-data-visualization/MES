@@ -103,15 +103,17 @@ function renderGraph(commits, userid) {
     container.className = "committer-graph";
 
     const margin = {top: 10, right: 10, bottom: 30, left: 40};
-    const max_width = window.innerWidth * 0.28;
-    const width = max_width - margin.left - margin.right;
+    const svgWidth = Math.min(Math.max(window.innerWidth * 0.34, 300), 510);
+    const width = svgWidth - margin.left - margin.right;
     const height = 100 - margin.top - margin.bottom;
+    const svgHeight = height + margin.top + margin.bottom;
     const windowSize = 1000 * 60 * 60 * 24 * 5;
 
     const svg = d3.select(container)
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
 
     const data = getCommitterGraphData(commits);
     if (!data.length) return container;

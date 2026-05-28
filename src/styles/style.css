@@ -415,10 +415,12 @@ canvas {
 
 #container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    --panel-gutter: clamp(8px, 2vw, 20px);
+    top: var(--panel-gutter);
+    right: var(--panel-gutter);
     z-index: 10;
-    width: 30vw;
+    width: min(clamp(360px, 36vw, 540px), calc(100vw - 16px));
+    max-height: calc(100vh - 16px);
 
     display: flex;
     flex-direction: column;
@@ -431,6 +433,7 @@ canvas {
     color: white;
     padding: 10px;
     border-radius: 8px;
+    overflow: hidden;
 }
 
 #user-container {
@@ -581,7 +584,7 @@ canvas {
 
 .committer-graph svg {
     display: block;
-    width: auto;
+    width: 100%;
     height: auto;
     max-width: 100%;
     overflow: visible;
@@ -723,21 +726,24 @@ canvas {
     color: white;
     border-radius: 8px;
     padding: 1px 2px;
+    overflow: hidden;
     box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
 }
 .ld_scrollbar{
     scrollbar-width: thin;
     scrollbar-color: #25e9bd #101224;
-    overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .leaderboard {
     max-height: 120px;
     padding-top: 10px;
     padding-left: 5px;
+    padding-right: 8px;
 }
 .ld_player {
     display: grid;
-    grid-template-columns: 10px 10px 18vw 10px;
+    grid-template-columns: 22px 10px minmax(0, 1fr) minmax(44px, auto);
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
@@ -753,16 +759,23 @@ canvas {
     font-family: Arial, sans-serif;
 }
 
+.ld_body {
+    min-width: 0;
+}
 
 .ld_name {
     font-size: 10px;
     font-weight: bold;
     margin-top: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-transform: uppercase;
+    white-space: nowrap;
     font-family: Arial, sans-serif;
 }
 
 .ld_bar {
+    width: 100%;
     height: 4px;
     background: #2d3040;
     border-radius: 10px;
@@ -781,6 +794,7 @@ canvas {
     text-align: right;
     color: #b7bac8;
     font-size: 16px;
+    min-width: 0;
     font-family: Arial, sans-serif;
 }
 
@@ -819,6 +833,7 @@ canvas {
     font-size: 10px;
     line-height: 1.25;
     text-transform: none;
+    white-space: normal;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
@@ -842,8 +857,12 @@ canvas {
 }
 
 #repoLabel{
+    display: block;
     font-weight: bold ;
     font-family: Arial, sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
