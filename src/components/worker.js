@@ -21,7 +21,7 @@ export class Worker extends THREE.Object3D {
         super();
         this.mode = 0
         this.t = 0
-        this.buildingCenter = this.getBuildingCenter(baseCoordinates)
+        this.buildingCenter = null;
         this.committerID = committerID;
         this.color="#FFF"
         this.aura = null;
@@ -31,7 +31,8 @@ export class Worker extends THREE.Object3D {
         this.url = "/MES/models/RobotExpressive.glb"
         //this.url = "models/r7v2.glb"
 
-        this.curve = generatePath(baseCoordinates)
+        this.curve = null;
+        this.setWorksite(baseCoordinates);
 
         this.c = 0
 
@@ -266,6 +267,27 @@ export class Worker extends THREE.Object3D {
 
     faceBuilding(){
         this.lookAt(new THREE.Vector3(this.buildingCenter.x, this.position.y, this.buildingCenter.z));
+    }
+
+    setWorksite(baseCoordinates = []){
+        const nextCenter = this.getBuildingCenter(baseCoordinates);
+        const centerChanged = !this.buildingCenter
+            || Math.abs(this.buildingCenter.x - nextCenter.x) > 0.001
+            || Math.abs(this.buildingCenter.z - nextCenter.z) > 0.001;
+
+        if (!centerChanged) {
+            return;
+        }
+
+        this.buildingCenter = nextCenter;
+        this.curve = generatePath(baseCoordinates);
+        this.t = 0;
+        this.c = 0;
+        this.mode = 0;
+
+        if (this.gltf) {
+            this.changeAnimation("Walking");
+        }
     }
 
     getBuildingCenter(baseCoordinates = []){

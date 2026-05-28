@@ -1,10 +1,10 @@
-import {Building} from "../components/building";
+import {City} from "../components/city";
 import {Tile} from "../components/tile";
 import {Sky} from "../components/sky";
 
 
 export function createWorld(scene) {
-    const building = new Building();
+    const building = new City();
     scene.add(building);
 
     const sky = new Sky();

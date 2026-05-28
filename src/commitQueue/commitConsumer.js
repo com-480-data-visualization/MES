@@ -9,6 +9,7 @@ export function consumeCommits(queue, userRegistry, building, workerApi) {
     const commits = queue.peekAndAdvance();
 
     for (const commit of commits) {
+        building.addCommits([commit])
 
         let commitId = getCommitterKey(commit)
 
@@ -27,7 +28,6 @@ export function consumeCommits(queue, userRegistry, building, workerApi) {
         updateCommitChrono(commits.length)
     }
 
-    building.addCommits(commits)
     return commits.length
 }
 
