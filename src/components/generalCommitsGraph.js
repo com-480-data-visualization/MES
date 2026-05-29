@@ -37,6 +37,14 @@ const xAxisG = g.append("g")
 
 const yAxisG = g.append("g");
 
+const yearLabel = svg.append("text")
+    .attr("x", margin.left + 4)
+    .attr("y", margin.top + 12)
+    .attr("fill", "#ffffff")
+    .attr("font-size", 12)
+    .attr("font-weight", 800)
+    .attr("pointer-events", "none");
+
 // ---- LINE ----
 const line = d3.line()
     .defined(d => !isNaN(d.time) && !isNaN(d.value)) // 🔥 prevents breaks
@@ -96,6 +104,7 @@ function render() {
 
     // fixed window
     x.domain([viewEnd - windowSize, viewEnd]);
+    yearLabel.text(d3.timeFormat("%Y")(new Date(viewEnd - windowSize)));
 
     // 🔥 IMPORTANT: sort slice to guarantee connectivity
     visible.sort((a, b) => a.time - b.time);
@@ -171,6 +180,7 @@ export function resetGraph() {
     renderOn = true;
 
     path.datum([]).attr("d", null);
+    yearLabel.text("");
     xAxisG.selectAll("*").remove();
     yAxisG.selectAll("*").remove();
 }

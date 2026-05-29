@@ -126,9 +126,19 @@ export async function createWorker(id) {
     const worker = new Worker(world.building.getBaseCoordinates(), id);
     workers.set(id, worker);
     await worker.loadModel();
-    scene.add(worker);
-    activeWorkers.push(worker);
-    world.tile.addFirefly();
+
+    if (workers.get(id) !== worker) {
+        return;
+    }
+
+    if (!worker.parent) {
+        scene.add(worker);
+    }
+
+    if (!activeWorkers.includes(worker)) {
+        activeWorkers.push(worker);
+        world.tile.addFirefly();
+    }
 }
 
 export function getWorker(id) {
@@ -138,6 +148,10 @@ export function getWorker(id) {
 
 export function reviveWorker(id){
     const w = workers.get(id)
+    if (!w) return;
+
+    w.setWorksite(world.building.getBaseCoordinates());
+
     if (!activeWorkers.includes(w)) {
         activeWorkers.push(w);
         world.tile.addFirefly();

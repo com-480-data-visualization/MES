@@ -155,6 +155,14 @@ function renderGraph(commits, userid) {
 
     const yAxisG = g.append("g");
 
+    const yearLabel = svg.append("text")
+        .attr("x", margin.left + 4)
+        .attr("y", margin.top + 12)
+        .attr("fill", "#ffffff")
+        .attr("font-size", 12)
+        .attr("font-weight", 800)
+        .attr("pointer-events", "none");
+
     const line = d3.line()
         .defined(d => !isNaN(d.time) && !isNaN(d.value))
         .x(d => x(d.time))
@@ -184,6 +192,7 @@ function renderGraph(commits, userid) {
         }
 
         x.domain([state.viewEnd - windowSize, state.viewEnd]);
+        yearLabel.text(d3.timeFormat("%Y")(new Date(state.viewEnd - windowSize)));
         y.domain([0, (d3.max(visible, d => d.value) || 1) * 1.2]);
 
         visible.sort((a, b) => a.time - b.time);

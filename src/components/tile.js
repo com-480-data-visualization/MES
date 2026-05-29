@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { palette } from '../utils/palette.js';
 
+const MAX_FIREFLIES = 100;
+
 export class Tile extends THREE.Object3D {
     constructor(size = 50, divisions = 10) {
         super();
@@ -63,6 +65,10 @@ export class Tile extends THREE.Object3D {
     }
 
     addFirefly() {
+        if (this.fireflyData.length >= MAX_FIREFLIES) {
+            return;
+        }
+
         const fireflyColor = new THREE.Color(palette.firefly);
         const color = fireflyColor.clone().lerp(new THREE.Color(0xffffff), Math.random() * 0.28);
         const center = this.getOpenGroundPoint();

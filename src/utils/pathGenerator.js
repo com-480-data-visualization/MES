@@ -4,7 +4,10 @@ import * as THREE from "three";
 
 
 export function generatePath(baseCoordinates = createDefaultBaseCoordinates()){
-    const coordinates = normalizeBaseCoordinates(baseCoordinates);
+    const sourceCoordinates = Array.isArray(baseCoordinates) && baseCoordinates.length > 0
+        ? baseCoordinates
+        : createDefaultBaseCoordinates();
+    const coordinates = normalizeBaseCoordinates(sourceCoordinates);
     const bounds = getBounds(coordinates);
     const center =  {
         x: (bounds.minX + bounds.maxX) / 2,
