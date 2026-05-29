@@ -130,6 +130,8 @@ We are also inspired by the concept of Gamification in Productivity, exploring h
 
 MES is an interactive website that turns the commit history of a GitHub repository into a small animated construction scene. A user enters a public GitHub repository URL, the website fetches the repository commits through the GitHub REST API, and the commits are replayed over time. Each commit becomes a block in a building, each contributor is represented as a worker, and the surrounding interface shows supporting views such as the commit timeline, contributor leaderboard, individual commit details, and repository activity graphs.
 
+For very large repositories, the project now grows into a city instead of one extremely tall building. After a building receives a random number of commits between 200 and 500, its roof is completed and the next commits start a new building in another location. This keeps each building readable while still showing the scale of repositories with many commits.
+
 The goal is to make software history understandable at a glance. Instead of reading a long commit log, the user can see who contributed, when the activity happened, and how the repository grew.
 
 ### How to run the website locally
@@ -172,7 +174,7 @@ The production files are generated in the `dist/` folder.
 2. Enter a GitHub repository URL, for example `https://github.com/owner/repository`.
 3. Click `Enter`.
 4. The website fetches repository metadata and commits.
-5. The visualization starts: workers walk to the building, commits become building blocks, the graph and leaderboard update, and the timeline tracks progress.
+5. The visualization starts: workers walk to the active construction site, commits become building blocks, the graph and leaderboard update, and the timeline tracks progress.
 6. Use the settings button to adjust music volume, optionally add a GitHub token, and change animation speed.
 7. Use the theme button to switch the environment theme.
 8. Click workers or commit blocks to inspect contributor or commit details.
@@ -226,6 +228,13 @@ MES/
     ├── api/
     ├── commitQueue/
     ├── components/
+    │   ├── building.js
+    │   ├── city.js
+    │   ├── generalCommitsGraph.js
+    │   ├── leaderboard.js
+    │   ├── sky.js
+    │   ├── tile.js
+    │   └── worker.js
     ├── styles/
     ├── utils/
     └── worldbuilding/
@@ -250,7 +259,8 @@ This is the entry point of the application. It creates the Three.js scene, camer
 
 #### `src/components/`
 
-- `building.js`: Defines the 3D building. It creates the foundation, walls, commit blocks, windows, roof, chimney, click behavior for commit blocks, and reset logic.
+- `building.js`: Defines one 3D building. It creates the foundation, walls, commit blocks, windows, roof, chimney, click behavior for commit blocks, and reset logic. Each building has its own commit counter, so a new building starts counting from zero.
+- `city.js`: Manages multiple buildings. It keeps track of the active building, chooses a random commit limit between 200 and 500, completes the roof when that limit is reached, and starts the next building at a new location. It lets large repositories become a readable city instead of one building that grows too high.
 - `generalCommitsGraph.js`: Draws the repository-level D3 line graph. It groups visible commit activity over time, renders axes, supports scrolling through time, and resets when the visualization restarts.
 - `leaderboard.js`: Renders the top committers list. It sorts contributors by commit count and displays their progress relative to the total commits.
 - `sky.js`: Creates and updates the background sky, including theme-dependent visual elements.
@@ -276,7 +286,7 @@ This is the entry point of the application. It creates the Three.js scene, camer
 
 #### `src/worldbuilding/`
 
-- `buildWorld.js`: Creates the main world objects and adds them to the scene: building, sky, and tile.
+- `buildWorld.js`: Creates the main world objects and adds them to the scene: city, sky, and tile. The city object manages the active building internally.
 - `homeButton.js`: Resets the visualization and returns the user to the welcome screen.
 - `mainAnimation.js`: Updates active workers and orbit controls during the visualization.
 - `settingsButton.js`: Opens and closes the settings panel, updates music volume, stores the GitHub token, and manages animation speed controls.
@@ -301,10 +311,11 @@ The website is organized around a simple pipeline:
 4. `commitProducer.js` streams commits into the async queue.
 5. `repositoryCommitPipeline.js` decides when to consume the next commit batch.
 6. `commitConsumer.js` reads commits from the queue and updates the visualization.
-7. `building.js` turns commits into 3D blocks.
-8. `worker.js` animates contributor robots.
-9. `generalCommitsGraph.js`, `leaderboard.js`, `infoPanel.js`, and `timeline.js` update the 2D interface.
-10. `main.js` keeps everything moving inside the animation loop.
+7. `city.js` decides which building should receive the next commit. If the active building has reached its random 200-500 commit limit, the city completes that roof and creates a new building elsewhere.
+8. `building.js` turns commits into 3D blocks on the active building.
+9. `worker.js` animates contributor robots and sends them toward the active construction site.
+10. `generalCommitsGraph.js`, `leaderboard.js`, `infoPanel.js`, and `timeline.js` update the 2D interface.
+11. `main.js` keeps everything moving inside the animation loop.
 
 This separation keeps the data flow understandable: API files fetch data, queue files schedule data, component files display data, utility files support shared behavior, and worldbuilding files control the scene-level experience.
 
