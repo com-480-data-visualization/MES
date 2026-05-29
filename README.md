@@ -126,6 +126,12 @@ We are also inspired by the concept of Gamification in Productivity, exploring h
 
 **80% of the final grade**
 
+### Links
+
+- [Website](https://com-480-data-visualization.github.io/MES/)
+- [Process Book](MES_Process_Book.pdf)
+- [Screencast](https://drive.google.com/file/d/1MJPb5P5mmIjfCaB1z2-oolJG9_m1DIMf/view?usp=sharing)
+
 ### Project overview
 
 MES is an interactive website that turns the commit history of a GitHub repository into a small animated construction scene. A user enters a public GitHub repository URL, the website fetches the repository commits through the GitHub REST API, and the commits are replayed over time. Each commit becomes a block in a building, each contributor is represented as a worker, and the surrounding interface shows supporting views such as the commit timeline, contributor leaderboard, individual commit details, and repository activity graphs.
